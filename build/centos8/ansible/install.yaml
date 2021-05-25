@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  tasks:
+  - name: upgrade all packages before any action
+    dnf:
+     name: '*'
+     state: latest
+    when: ansible_pkg_mgr == 'dnf'
+
+  - name: install packages
+    dnf: 
+     name:
+      - git
+      - nc
+      - curl
+      - strace
+      - less
+      - vim
+      - make
+      - patch
+      - tar
+      - unzip
+      - sudo
+      - nss_wrapper
+     state: present
+    when: ansible_pkg_mgr == 'dnf'
