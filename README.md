@@ -43,7 +43,6 @@ podman push gitlab.ow2.org:4567/fusioniam/fusioniam/<image name>:<version>
 
 A file named `ENVVAR` is mounted in every container root, all configuration settings are set in this file.
 
-|-----------------------------------|-----------------------------------------------|
 | Variable name                     | Description                                   |
 |-----------------------------------|-----------------------------------------------|
 | ACCCONFIGROOTPW                   | Password of OpenLDAP cn=config admin          |
@@ -58,7 +57,6 @@ A file named `ENVVAR` is mounted in every container root, all configuration sett
 | SERVICEDESK_LDAP_USERNAME         | Identifier of SD service account              |
 | WHITEPAGES_LDAP_PASSWORD          | Password of WP service account                |
 | WHITEPAGES_LDAP_USERNAME          | Identifier of WP service account              |
-|-----------------------------------|-----------------------------------------------|
 
 An example in this file is available in `run/ENVVAR.example`.
 
@@ -67,4 +65,6 @@ An example in this file is available in `run/ENVVAR.example`.
 You must mount the ENVVAR file to run the container.
 
 For example:
+```
 podman run --volume ./run/ENVVAR.example:/ENVVAR gitlab.ow2.org:4567/fusioniam-centos8-openldap-ltb
+```
