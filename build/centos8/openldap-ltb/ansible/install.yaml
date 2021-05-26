@@ -1,0 +1,71 @@
+- hosts: localhost
+  tasks:
+  - name: Install LTB repository
+    yum_repository:
+      name: OpenLDAP-LTB
+      description: OpenLDAP-LTB YUM repo
+      file: ltb-project
+      baseurl: https://ltb-project.org/rpm/$releasever/$basearch
+      gpgcheck: yes
+
+  - name: Install LTB GPG key
+    copy:
+      src: RPM-GPG-KEY-LTB-project
+      dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Import LTB GPG key
+    rpm_key:
+      key: /etc/pki/rpm-gpg/RPM-GPG-KEY-LTB-project
+      state: present
+
+  - name: Install epel-release
+    dnf:
+      name: epel-release
+      state: latest
+
+  - name: Install OpenLDAP LTB
+    dnf:
+      name: 
+        - openldap-ltb
+        - openldap-ltb-mdb-utils
+        - openldap-ltb-contrib-overlays
+        - openldap-ltb-ppm
+        - openldap-ltb-explockout
+      state: latest
+
+  - name: Install ldapvi
+    dnf:
+      name: ldapvi
+      state: latest
+
+  - name: Disable slapd service
+    systemd:
+      name: slapd.service 
+      enabled: false
+
+  - name: Create cn=config directory
+    file:
+      path: /usr/local/openldap/etc/openldap/slapd.d
+      state: directory
+      mode: 0750
+
+  - name: remove slapd_conf parameter
+    replace:
+      path: /usr/local/openldap/etc/openldap/slapd-cli.conf
+      regexp: 'SLAPD_CONF=\"\$SLAPD_PATH\/etc\/openldap\/slapd.conf\"'
+      replace: 'SLAPD_CONF=""'
+
+  - name: configure slapd_conf_dir
+    replace:
+      path: /usr/local/openldap/etc/openldap/slapd-cli.conf
+      regexp: 'SLAPD_CONF_DIR=\"\"'
+      replace: 'SLAPD_CONF_DIR="$SLAPD_PATH/etc/openldap/slapd.d"'
+
+  - name: Create LDAPI socket dir
+    file:
+        path: /var/run/slapd
+        state: directory
+        mode: 750

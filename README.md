@@ -36,3 +36,35 @@ FusionIAM developers can upload images to OW2 repository:
 podman tag localhost/<image name>:<version> gitlab.ow2.org:4567/fusioniam/fusioniam/<image name>:<version>
 podman push gitlab.ow2.org:4567/fusioniam/fusioniam/<image name>:<version>
 ```
+
+## Run
+
+### Configuration
+
+A file named `ENVVAR` is mounted in every container root, all configuration settings are set in this file.
+
+|-----------------------------------|-----------------------------------------------|
+| Variable name                     | Description                                   |
+|-----------------------------------|-----------------------------------------------|
+| ACCCONFIGROOTPW                   | Password of OpenLDAP cn=config admin          |
+| ACCDATAROOTPW                     | Password of OpenLDAP main database admin      |
+| ADMIN_LDAP_PASSWORD               | Password of admin account                     |
+| CUSTOMERID                        | ID of the organization / customer             |
+| FUSIONDIRECTORY_LDAP_PASSWORD     | Password of FD service account                |
+| FUSIONDIRECTORY_LDAP_USERNAME     | Identifier of FD service account              |
+| LSC_LDAP_PASSWORD                 | Password of LSC service account               |
+| LSC_LDAP_USERNAME                 | Identifier of LSC service account             |
+| SERVICEDESK_LDAP_PASSWORD         | Password of SD service account                |
+| SERVICEDESK_LDAP_USERNAME         | Identifier of SD service account              |
+| WHITEPAGES_LDAP_PASSWORD          | Password of WP service account                |
+| WHITEPAGES_LDAP_USERNAME          | Identifier of WP service account              |
+|-----------------------------------|-----------------------------------------------|
+
+An example in this file is available in `run/ENVVAR.example`.
+
+### Launch a container
+
+You must mount the ENVVAR file to run the container.
+
+For example:
+podman run --volume ./run/ENVVAR.example:/ENVVAR gitlab.ow2.org:4567/fusioniam-centos8-openldap-ltb

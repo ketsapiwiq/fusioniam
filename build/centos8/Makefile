@@ -6,9 +6,13 @@ VVERSION=`cat $(FVERSION)`
 
 all:
 	make -B base
+	make -B openldap
 
 base:
 	$(CTN) build --no-cache -t $(IMAGENAME):$(VVERSION) .
 
 clean:
 	$(CTN) rmi -f $(IMAGENAME):$(VVERSION)
+
+openldap:
+	cd openldap-ltb ; make -B all

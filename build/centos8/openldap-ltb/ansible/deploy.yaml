@@ -1,0 +1,63 @@
+- hosts: localhost
+  vars:
+    ACCCONFIGROOTPW:                    "{{ lookup('env','ACCCONFIGROOTPW') }}"
+    ACCDATAROOTPW:                      "{{ lookup('env','ACCDATAROOTPW') }}"
+    ADMIN_LDAP_PASSWORD:                "{{ lookup('env','ADMIN_LDAP_PASSWORD') }}"
+    CUSTOMERID:                         "{{ lookup('env','CUSTOMERID') }}"
+    FUSIONDIRECTORY_LDAP_PASSWORD:      "{{ lookup('env','FUSIONDIRECTORY_LDAP_PASSWORD') }}"
+    FUSIONDIRECTORY_LDAP_USERNAME:      "{{ lookup('env','FUSIONDIRECTORY_LDAP_USERNAME') }}"
+    GID:                                "{{ lookup('env','FUSIONIAM_GID') }}"
+    LSC_LDAP_PASSWORD:                  "{{ lookup('env','LSC_LDAP_PASSWORD') }}"
+    LSC_LDAP_USERNAME:                  "{{ lookup('env','LSC_LDAP_USERNAME') }}"
+    SERVICEDESK_LDAP_PASSWORD:          "{{ lookup('env','SERVICEDESK_LDAP_PASSWORD') }}"
+    SERVICEDESK_LDAP_USERNAME:          "{{ lookup('env','SERVICEDESK_LDAP_USERNAME') }}"
+    UID:                                "{{ lookup('env','FUSIONIAM_UID') }}"
+    WHITEPAGES_LDAP_PASSWORD:           "{{ lookup('env','WHITEPAGES_LDAP_PASSWORD') }}"
+    WHITEPAGES_LDAP_USERNAME:           "{{ lookup('env','WHITEPAGES_LDAP_USERNAME') }}"
+  tasks:
+  - name: Create Install directory
+    file:
+      path: /fusioniam/install/
+      state: directory
+      mode: 0600
+
+  - name: Copy initial config
+    template:
+      src: config.ldif.j2
+      dest: /fusioniam/install/config.ldif
+      mode: 0600
+
+  - name: Copy initial data
+    template:
+      src: data.ldif.j2
+      dest: /fusioniam/install/data.ldif
+      mode: 0600
+
+  - name: Check if OpenLDAP configuration folder is empty before proceeding
+    find:
+      paths: /usr/local/openldap/etc/openldap/slapd.d
+      patterns: '*.*'
+    register: filesFound
+
+  - debug:
+      msg: OpenLDAP configuration folder not empty, skipping configuration bootstrap.
+    when: filesFound.matched != 0
+
+  - name: OpenLDAP configuration folder empty, bootstrap OpenLDAP configuration.
+    shell: /usr/local/openldap/sbin/slapadd -n0 -F /usr/local/openldap/etc/openldap/slapd.d -l /fusioniam/install/config.ldif
+    when: filesFound.matched == 0
+
+  - name: Check if OpenLDAP data folder is empty before proceeding
+    find:
+      paths: /usr/local/openldap/var/openldap-data/
+      patterns: '*.mdb'
+    register: filesFound
+
+  - debug:
+      msg: OpenLDAP data folder not empty, skipping configuration bootstrap.
+    when: filesFound.matched != 0
+
+  - name: OpenLDAP data folder empty, bootstrap OpenLDAP data.
+    shell: /usr/local/openldap/sbin/slapadd -n1 -F /usr/local/openldap/etc/openldap/slapd.d -l /fusioniam/install/data.ldif
+    when: filesFound.matched == 0
+
