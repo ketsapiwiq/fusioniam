@@ -23,3 +23,16 @@ Then build all images:
 ```
 make all
 ```
+
+### Upload images
+
+List  images:
+```
+podman images
+```
+
+FusionIAM developers can upload images to OW2 repository:
+```
+podman tag localhost/<image name>:<version> gitlab.ow2.org:4567/fusioniam/fusioniam/<image name>:<version>
+podman push gitlab.ow2.org:4567/fusioniam/fusioniam/<image name>:<version>
+```
