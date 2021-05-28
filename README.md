@@ -66,5 +66,5 @@ You must mount the ENVVAR file to run the container.
 
 For example:
 ```
-podman run --volume ./run/ENVVAR.example:/ENVVAR gitlab.ow2.org:4567/fusioniam-centos8-openldap-ltb
+podman run -v ./run/ENVVAR.example:/ENVVAR -p 33389:33389 gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-openldap-ltb:v0.1
 ```
