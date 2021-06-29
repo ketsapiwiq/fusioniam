@@ -7,6 +7,7 @@ VVERSION=`cat $(FVERSION)`
 all:
 	make -B base
 	make -B openldap
+	make -B whitepages
 
 base:
 	$(CTN) build --no-cache -t $(IMAGENAME):$(VVERSION) .
@@ -16,3 +17,6 @@ clean:
 
 openldap:
 	cd openldap-ltb ; make -B all
+
+whitepages:
+	cd white-pages ; make -B all

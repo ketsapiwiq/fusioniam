@@ -1,0 +1,48 @@
+---
+- hosts: localhost
+  vars:
+    CUSTOMERID: "{{ lookup('env', 'CUSTOMERID') | default(omit) }}"
+    LDAP_HOST: "{{ lookup('env', 'LDAP_HOST') | default('localhost',true) }}"
+    LDAP_PORT: "{{ lookup('env', 'LDAP_PORT') | default('33389',true) }}"
+    LDAP_PROTO: "{{ lookup('env', 'LDAP_PROTO') | default('ldap',true) }}"
+    LDAP_STARTTLS: "{{ lookup('env', 'LDAP_STARTTLS') | default('false',true) }}"
+    SSO_DOMAIN: "{{ lookup('env', 'SSO_DOMAIN') | default(omit) }}"
+    WHITEPAGES_LDAP_PASSWORD: "{{ lookup('env', 'WHITEPAGES_LDAP_PASSWORD') | default(omit) }}"
+    WHITEPAGES_LDAP_USERNAME: "{{ lookup('env', 'WHITEPAGES_LDAP_USERNAME') | default(omit) }}"
+  tasks:
+  - name: Assert variables
+    assert:
+      that:
+        - '"{{ item.value }}" is defined'
+        - '{{ item.value | length }} > 0'
+      quiet: True
+      fail_msg: '{{ item.name }} is missing or empty'
+    loop:
+      - name: 'CUSTOMERID'
+        value: '{{ CUSTOMERID }}'
+      - name: 'LDAP_HOST'
+        value: '{{ LDAP_HOST }}'
+      - name: 'LDAP_PORT'
+        value: '{{ LDAP_PORT }}'
+      - name: 'LDAP_PROTO'
+        value: '{{ LDAP_PROTO }}'
+      - name: 'LDAP_STARTTLS'
+        value: '{{ LDAP_STARTTLS }}'
+      - name: 'SSO_DOMAIN'
+        value: '{{ SSO_DOMAIN }}'
+      - name: 'WHITEPAGES_LDAP_PASSWORD'
+        value: '{{ WHITEPAGES_LDAP_PASSWORD }}'
+      - name: 'WHITEPAGES_LDAP_USERNAME'
+        value: '{{ WHITEPAGES_LDAP_USERNAME }}'
+
+  - name: Deploy config.inc.local.php file
+    template:
+      src: config.inc.local.php.j2
+      dest: /usr/share/white-pages/conf/config.inc.local.php
+      mode: u=rw,g=r,o=r
+
+  - name: Deploy vhost
+    template:
+      src: white-pages.conf.j2
+      dest: /etc/nginx/conf.d/white-pages.conf
+      mode: u=rw,g=r,o=r

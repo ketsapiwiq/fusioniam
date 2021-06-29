@@ -1,0 +1,18 @@
+<?php
+
+# LDAP
+$ldap_url = "{{ LDAP_PROTO }}://{{ LDAP_HOST }}:{{ LDAP_PORT }}";
+$ldap_starttls = {{ LDAP_STARTTLS }};
+$ldap_binddn = "cn={{ WHITEPAGES_LDAP_USERNAME }},ou=dsa,o=admin,dc=fusioniam,dc=org";
+$ldap_bindpw = "{{ WHITEPAGES_LDAP_PASSWORD }}";
+$ldap_base = "o={{ CUSTOMERID }},dc=fusioniam,dc=org";
+$ldap_user_base = "ou=users,".$ldap_base;
+$ldap_user_filter = "(objectClass=inetOrgPerson)";
+$ldap_size_limit = 100;
+$ldap_group_base = "ou=groups,".$ldap_base;
+
+# Graphics
+$display_footer = false;
+
+# Logout Link
+$logout_link = "https://auth.{{ SSO_DOMAIN}}/";

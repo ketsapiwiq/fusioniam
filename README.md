@@ -51,6 +51,8 @@ A file named `ENVVAR` is mounted in every container root, all configuration sett
 | CUSTOMERID                        | ID of the organization / customer             |
 | FUSIONDIRECTORY_LDAP_PASSWORD     | Password of FD service account                |
 | FUSIONDIRECTORY_LDAP_USERNAME     | Identifier of FD service account              |
+| LDAP_HOST                         | Hostname of LDAP server                       |
+| LDAP_PORT                         | Port of LDAP server                           |
 | LSC_LDAP_PASSWORD                 | Password of LSC service account               |
 | LSC_LDAP_USERNAME                 | Identifier of LSC service account             |
 | SERVICEDESK_LDAP_PASSWORD         | Password of SD service account                |
