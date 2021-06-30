@@ -92,10 +92,27 @@ podman stop fusioniam-directory-server
 
 #### White pages
 
+Create the shared directory for socket:
+```
+mkdir run/wp-run
+```
+
 Start:
 ```
 podman run \
   -v ./run/ENVVAR.example:/ENVVAR \
+  -v ./run/wp-run:/run/php-fpm/ \
+  --rm=true \
+  --name=fusioniam-white-pages-php-fpm \
+  --detach=true \
+  --entrypoint='["/bin/bash","/run-ct.sh","php-fpm"]' \
+  gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-white-pages:v0.1
+```
+
+```
+podman run \
+  -v ./run/ENVVAR.example:/ENVVAR \
+  -v ./run/wp-run:/var/run/php-fpm/ \
   --rm=true \
   -p 8080:8080 \
   --name=fusioniam-white-pages-nginx \
@@ -106,5 +123,5 @@ podman run \
 
 Stop:
 ```
-podman stop fusioniam-white-pages-nginx
+podman stop fusioniam-white-pages-nginx fusioniam-white-pages-php-fpm
 ```
