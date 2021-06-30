@@ -62,11 +62,49 @@ A file named `ENVVAR` is mounted in every container root, all configuration sett
 
 An example in this file is available in `run/ENVVAR.example`.
 
-### Launch a container
+### Launch containers
 
-You must mount the ENVVAR file to run the container.
+We use the following options:
+* `-v /path/to/ENVVAR:/ENVVAR`: mount the ENVVAR file
+* `--rm=true`: Remove old container
+* `-p PORT:PORT`: bind ports
+* `--name=NAME`: friendly name
+* `--entrypoint='["command","arg1","arg2"]'`: override entryoint if needed
+* `--detach=true`: detach container
 
-For example:
+#### Directory server
+
+Start:
 ```
-podman run -v ./run/ENVVAR.example:/ENVVAR -p 33389:33389 gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-openldap-ltb:v0.1
+podman run \
+  -v ./run/ENVVAR.example:/ENVVAR \
+  --rm=true \
+  -p 33389:33389 \
+  --name=fusioniam-directory-server \
+  --detach=true \
+  gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-openldap-ltb:v0.1
+```
+
+Stop:
+```
+podman stop fusioniam-directory-server
+```
+
+#### White pages
+
+Start:
+```
+podman run \
+  -v ./run/ENVVAR.example:/ENVVAR \
+  --rm=true \
+  -p 8080:8080 \
+  --name=fusioniam-white-pages-nginx \
+  --detach=true \
+  --entrypoint='["/bin/bash","/run-ct.sh","nginx"]' \
+  gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-white-pages:v0.1
+```
+
+Stop:
+```
+podman stop fusioniam-white-pages-nginx
 ```
