@@ -66,11 +66,14 @@ An example in this file is available in `run/ENVVAR.example`.
 
 We use the following options:
 * `-v /path/to/ENVVAR:/ENVVAR`: mount the ENVVAR file
+* `-v`: mount other volumes
 * `--rm=true`: Remove old container
 * `-p PORT:PORT`: bind ports
 * `--name=NAME`: friendly name
 * `--entrypoint='["command","arg1","arg2"]'`: override entryoint if needed
 * `--detach=true`: detach container
+* `--no-hosts`: do not copy hosts file
+* `--network=slirp4netns:allow_host_loopback=true`: connect to host loopback interface
 
 #### Directory server
 
@@ -79,9 +82,10 @@ Start:
 podman run \
   -v ./run/ENVVAR.example:/ENVVAR \
   --rm=true \
-  -p 33389:33389 \
+  -p 127.0.0.1:33389:33389 \
   --name=fusioniam-directory-server \
   --detach=true \
+  --no-hosts \
   gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-openldap-ltb:v0.1
 ```
 
@@ -105,6 +109,8 @@ podman run \
   --rm=true \
   --name=fusioniam-white-pages-php-fpm \
   --detach=true \
+  --no-hosts \
+  --network=slirp4netns:allow_host_loopback=true \
   --entrypoint='["/bin/bash","/run-ct.sh","php-fpm"]' \
   gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-white-pages:v0.1
 ```
@@ -114,9 +120,10 @@ podman run \
   -v ./run/ENVVAR.example:/ENVVAR \
   -v ./run/wp-run:/var/run/php-fpm/ \
   --rm=true \
-  -p 8080:8080 \
+  -p 127.0.0.1:8080:8080 \
   --name=fusioniam-white-pages-nginx \
   --detach=true \
+  --no-hosts \
   --entrypoint='["/bin/bash","/run-ct.sh","nginx"]' \
   gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-white-pages:v0.1
 ```
