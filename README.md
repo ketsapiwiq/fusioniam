@@ -4,6 +4,14 @@ This is the main [FusionIAM](https://www.fusioniam.org) project.
 
 FusionIAM is a software federation to offer a global open source IAM solution.
 
+| Short name | Long name                    | Technical component           |
+|------------|------------------------------|-------------------------------|
+| FIDS       | FusionIAM Directory Server   | OpenLDAP LTB                  |
+| FIDM       | FusionIAM Directory Manager  | Fusion Directory              |
+| FIAM       | FusionIAM Access Manager     | LemonLDAP::NG                 |
+| FIWP       | FusionIAM White Pages        | LTB White Pages               |
+| FISD       | FusionIAM Service Desk       | LTB Service Desk              |
+
 ## Build
 
 ### Prerequisites
@@ -75,7 +83,7 @@ We use the following options:
 * `--no-hosts`: do not copy hosts file
 * `--network=slirp4netns:allow_host_loopback=true`: connect to host loopback interface
 
-#### Directory server
+#### FIDS
 
 Start:
 ```
@@ -94,7 +102,7 @@ Stop:
 podman stop fusioniam-directory-server
 ```
 
-#### White pages
+#### FIWP
 
 Create the shared directory for socket:
 ```
