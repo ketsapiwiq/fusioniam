@@ -85,10 +85,17 @@ We use the following options:
 
 #### FIDS
 
+Create directories for data and configuration:
+```
+mkdir -p run/volumes/ldap-data run/volumes/ldap-config
+```
+
 Start:
 ```
 podman run \
   -v ./run/ENVVAR.example:/ENVVAR \
+  -v ./run/volumes/ldap-data:/usr/local/openldap/var/openldap-data \
+  -v ./run/volumes/ldap-config:/usr/local/openldap/etc/openldap/slapd.d \
   --rm=true \
   -p 127.0.0.1:33389:33389 \
   --name=fusioniam-directory-server \
@@ -106,14 +113,14 @@ podman stop fusioniam-directory-server
 
 Create the shared directory for socket:
 ```
-mkdir run/wp-run
+mkdir -p run/volumes/wp-run
 ```
 
 Start:
 ```
 podman run \
   -v ./run/ENVVAR.example:/ENVVAR \
-  -v ./run/wp-run:/run/php-fpm/ \
+  -v ./run/volumes/wp-run:/run/php-fpm/ \
   --rm=true \
   --name=fusioniam-white-pages-php-fpm \
   --detach=true \
@@ -126,7 +133,7 @@ podman run \
 ```
 podman run \
   -v ./run/ENVVAR.example:/ENVVAR \
-  -v ./run/wp-run:/var/run/php-fpm/ \
+  -v ./run/volumes/wp-run:/var/run/php-fpm/ \
   --rm=true \
   -p 127.0.0.1:8080:8080 \
   --name=fusioniam-white-pages-nginx \
