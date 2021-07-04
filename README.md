@@ -49,7 +49,7 @@ podman push gitlab.ow2.org:4567/fusioniam/fusioniam/<image name>:<version>
 
 ### Configuration
 
-A file named `ENVVAR` is mounted in every container root, all configuration settings are set in this file.
+Configuration parameters are set as environment variables.
 
 | Variable name                     | Description                                   |
 |-----------------------------------|-----------------------------------------------|
@@ -75,10 +75,10 @@ An example in this file is available in `run/ENVVAR.example`.
 ### Launch containers
 
 We use the following options:
-* `-v /path/to/ENVVAR:/ENVVAR`: mount the ENVVAR file
-* `-v`: mount other volumes
+* `-env-file=/path/to/ENVVAR`: pass environment variables to container
+* `-v`: mount volumes if needed
 * `--rm=true`: Remove old container
-* `-p PORT:PORT`: bind ports
+* `-p HOST_IP:HOST_PORT:PORT`: bind container ports
 * `--name=NAME`: friendly name
 * `--entrypoint='["command","arg1","arg2"]'`: override entryoint if needed
 * `--detach=true`: detach container
@@ -95,7 +95,7 @@ mkdir -p run/volumes/ldap-data run/volumes/ldap-config
 Start:
 ```
 podman run \
-  -v ./run/ENVVAR.example:/ENVVAR \
+  --env-file=./run/ENVVAR.example \
   -v ./run/volumes/ldap-data:/usr/local/openldap/var/openldap-data \
   -v ./run/volumes/ldap-config:/usr/local/openldap/etc/openldap/slapd.d \
   --rm=true \
@@ -121,7 +121,7 @@ mkdir -p run/volumes/wp-run
 Start:
 ```
 podman run \
-  -v ./run/ENVVAR.example:/ENVVAR \
+  --env-file=./run/ENVVAR.example \
   -v ./run/volumes/wp-run:/run/php-fpm/ \
   --rm=true \
   --name=fusioniam-white-pages-php-fpm \
@@ -134,7 +134,7 @@ podman run \
 
 ```
 podman run \
-  -v ./run/ENVVAR.example:/ENVVAR \
+  --env-file=./run/ENVVAR.example \
   -v ./run/volumes/wp-run:/var/run/php-fpm/ \
   --rm=true \
   -p 127.0.0.1:8080:8080 \
@@ -160,12 +160,12 @@ mkdir -p run/volumes/sso-data
 Start database:
 ```
 podman run \
+  --env-file=./run/ENVVAR.example \
   -v ./run/volumes/sso-data:/var/lib/postgresql/data \
   --rm=true \
   -p 127.0.0.1:33432:5432 \
   --name=fusioniam-database \
   --detach=true \
   --no-hosts \
-  --env-file=./run/ENVVAR.example \
   docker.io/library/postgres
 ```

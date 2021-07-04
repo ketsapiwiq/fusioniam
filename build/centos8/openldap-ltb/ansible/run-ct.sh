@@ -1,10 +1,5 @@
 #!/bin/bash 
 
-while read line ;
-do
-   export $line ;
-done < /ENVVAR 
-
 echo "fusioniam:x:$(id -u):$(id -G | cut -d' ' -f 2):,,,:${HOME}:/bin/bash" >> /etc/passwd
 echo "fusioniam:x:$(id -G | cut -d' ' -f 2):" >> /etc/group
 
