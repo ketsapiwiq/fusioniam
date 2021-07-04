@@ -63,6 +63,8 @@ A file named `ENVVAR` is mounted in every container root, all configuration sett
 | LDAP_PORT                         | Port of LDAP server                           |
 | LSC_LDAP_PASSWORD                 | Password of LSC service account               |
 | LSC_LDAP_USERNAME                 | Identifier of LSC service account             |
+| POSTGRES_PASSWORD                 | Password of database account                  |
+| POSTGRES_USER                     | Login of database account                     |
 | SERVICEDESK_LDAP_PASSWORD         | Password of SD service account                |
 | SERVICEDESK_LDAP_USERNAME         | Identifier of SD service account              |
 | WHITEPAGES_LDAP_PASSWORD          | Password of WP service account                |
@@ -146,4 +148,24 @@ podman run \
 Stop:
 ```
 podman stop fusioniam-white-pages-nginx fusioniam-white-pages-php-fpm
+```
+
+#### FIAM
+
+Create volumes:
+```
+mkdir -p run/volumes/sso-data
+```
+
+Start database:
+```
+podman run \
+  -v ./run/volumes/sso-data:/var/lib/postgresql/data \
+  --rm=true \
+  -p 127.0.0.1:33432:5432 \
+  --name=fusioniam-database \
+  --detach=true \
+  --no-hosts \
+  --env-file=./run/ENVVAR.example \
+  docker.io/library/postgres
 ```
