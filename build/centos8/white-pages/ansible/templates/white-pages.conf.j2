@@ -4,7 +4,7 @@ server {
        root /usr/share/white-pages/htdocs/;
        index index.php;
 
-       server_name wp.{{ SSO_DOMAIN }};
+       server_name {{ VHOST_NAME }}.{{ SSO_DOMAIN }};
 
        access_log /var/log/nginx/wp.access.log;
        error_log /var/log/nginx/wp.error.log;

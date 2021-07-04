@@ -7,6 +7,7 @@
     LDAP_PROTO: "{{ lookup('env', 'LDAP_PROTO') | default('ldap',true) }}"
     LDAP_STARTTLS: "{{ lookup('env', 'LDAP_STARTTLS') | default('false',true) }}"
     SSO_DOMAIN: "{{ lookup('env', 'SSO_DOMAIN') | default(omit) }}"
+    VHOST_NAME: "{{ lookup('env', 'WHITEPAGES_NAME') | default(omit) }}"
     WHITEPAGES_LDAP_PASSWORD: "{{ lookup('env', 'WHITEPAGES_LDAP_PASSWORD') | default(omit) }}"
     WHITEPAGES_LDAP_USERNAME: "{{ lookup('env', 'WHITEPAGES_LDAP_USERNAME') | default(omit) }}"
   tasks:
@@ -30,6 +31,8 @@
         value: '{{ LDAP_STARTTLS }}'
       - name: 'SSO_DOMAIN'
         value: '{{ SSO_DOMAIN }}'
+      - name: 'VHOST_NAME'
+        value: '{{ VHOST_NAME }}'
       - name: 'WHITEPAGES_LDAP_PASSWORD'
         value: '{{ WHITEPAGES_LDAP_PASSWORD }}'
       - name: 'WHITEPAGES_LDAP_USERNAME'
