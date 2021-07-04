@@ -1,0 +1,88 @@
+- name: Change session backends
+  lemonldap_config:
+      name: "{{ item }}"
+      value: "Apache::Session::Browseable::PgJSON"
+  loop:
+    - globalStorage
+    - persistentStorage
+    - samlStorage
+    - casStorage
+    - oidcStorage
+
+- name: Change global session backends options
+  lemonldap_config:
+      name: "globalStorageOptions/{{ item.key }}"
+      value: "{{ item.value }}"
+  loop:
+    - key: DataSource
+      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+    - key: TableName
+      value: sessions
+    - key: UserName
+      value: "{{ lemonldap2_pguser }}"
+    - key: Password
+      value: "{{ lemonldap2_pgpassword }}"
+    - key: Commit
+      value: 1
+
+- name: Change persistent session backends options
+  lemonldap_config:
+      name: "persistentStorageOptions/{{ item.key }}"
+      value: "{{ item.value }}"
+  loop:
+    - key: DataSource
+      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+    - key: TableName
+      value: psessions
+    - key: UserName
+      value: "{{ lemonldap2_pguser }}"
+    - key: Password
+      value: "{{ lemonldap2_pgpassword }}"
+    - key: Commit
+      value: 1
+
+- name: Change SAML session backends options
+  lemonldap_config:
+      name: "samlStorageOptions/{{ item.key }}"
+      value: "{{ item.value }}"
+  loop:
+    - key: DataSource
+      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+    - key: TableName
+      value: samlsessions
+    - key: UserName
+      value: "{{ lemonldap2_pguser }}"
+    - key: Password
+      value: "{{ lemonldap2_pgpassword }}"
+    - key: Commit
+      value: 1
+
+- name: Change OIDC session backends options
+  lemonldap_config:
+      name: "oidcStorageOptions/{{ item.key }}"
+      value: "{{ item.value }}"
+  loop:
+    - key: DataSource
+      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+    - key: TableName
+      value: oidcsessions
+    - key: UserName
+      value: "{{ lemonldap2_pguser }}"
+    - key: Password
+      value: "{{ lemonldap2_pgpassword }}"
+
+- name: Change CAS session backends options
+  lemonldap_config:
+      name: "casStorageOptions/{{ item.key }}"
+      value: "{{ item.value }}"
+  loop:
+    - key: DataSource
+      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+    - key: TableName
+      value: cassessions
+    - key: UserName
+      value: "{{ lemonldap2_pguser }}"
+    - key: Password
+      value: "{{ lemonldap2_pgpassword }}"
+    - key: Commit
+      value: 1

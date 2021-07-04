@@ -1,0 +1,72 @@
+---
+- hosts: localhost
+  vars:
+    lemonldap2_version: 2.0.11
+
+  tasks:
+  - name: Install locales for glibc
+    yum:
+      name: glibc-all-langpacks
+      state: installed
+
+  - name: Install EPEL
+    yum:
+     name: epel-release
+     state: installed
+
+  - name: Install DNF plugin core
+    package:
+     name: dnf-plugins-core
+     state: installed
+
+  - name: Enable PowerTools 
+    shell: yum config-manager --set-enabled powertools 
+
+  - name: Add lemonldap 2.0 repository
+    yum_repository:
+     name: lemonldap-ng
+     description: LemonLDAP::NG packages
+     baseurl: https://lemonldap-ng.org/redhat/2.0/$releasever/noarch
+     enabled: yes
+     gpgcheck: yes
+     gpgkey: https://lemonldap-ng.org/_media/rpm-gpg-key-ow2
+
+  - name: Add lemonldap 2.0 extras
+    yum_repository:
+     name: lemonldap-ng-extras
+     description: LemonLDAP::NG extra packages
+     baseurl: https://lemonldap-ng.org/redhat/extras/$releasever
+     enabled: yes
+     gpgcheck: yes
+     gpgkey: https://lemonldap-ng.org/_media/rpm-gpg-key-ow2
+
+  - name: install lemonldap 2.0 package
+    yum:
+     name:
+      - "lemonldap-ng-{{ lemonldap2_version }}"
+      - "lemonldap-ng-fastcgi-server-{{ lemonldap2_version }}"
+      - "lemonldap-ng-nginx-{{ lemonldap2_version }}"
+      - python3-ldap
+      - python3-psycopg2
+      - perl-DBD-Pg
+      - lasso-perl
+      - perl-Glib
+     state: present
+
+  - name: Create Log4Perl
+    copy:
+     src: log4perl.conf
+     dest: /etc/log4perl.conf
+
+  - name: Install Nginx proxy params
+    copy:
+     src: proxy_params
+     dest: /etc/nginx/proxy_params
+
+  - name: LemonLDAP daemon configuration file
+    template:
+        src: templates/llng-fastcgi-server.j2
+        dest: /etc/default/llng-fastcgi-server
+        owner: root
+        group: root
+        mode: '0644'

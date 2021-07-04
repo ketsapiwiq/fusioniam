@@ -1,0 +1,39 @@
+- name: Enable CAS issuer
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: issuerDBCASActivation
+        value: 1
+      - name: casAccessControlPolicy
+        value: error
+
+- name: Enable OIDC issuer
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: oidcServicePrivateKeySig
+        value: "{{ lookup('file', lemonldap2_oidcpriv) }}"
+      - name: oidcServicePublicKeySig
+        value: "{{ lookup('file', lemonldap2_oidcpub) }}"
+      - name: issuerDBOpenIDConnectActivation
+        value: 1
+
+- name: Enable SAML issuer
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: samlServicePrivateKeySig
+        value: "{{ lookup('file', lemonldap2_samlpriv) }}"
+      - name: samlServicePublicKeySig
+        value: "{{ lookup('file', lemonldap2_samlpub) }}"
+      - name: issuerDBSAMLActivation
+        value: 1
+      - name: samlOrganizationName
+        value: 'FusionIAM'
+      - name: samlOrganizationDisplayName 
+        value: 'FusionIAM'
+      - name: samlOrganizationURL 
+        value: 'https://www.fusioniam.org'

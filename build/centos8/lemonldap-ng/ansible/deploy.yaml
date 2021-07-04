@@ -1,0 +1,104 @@
+---
+- hosts: localhost
+
+  vars:
+      lemonldap2_pghost: "{{ lookup('env', 'POSTGRES_HOST') }}"
+      lemonldap2_pgport: "{{ lookup('env', 'POSTGRES_PORT') }}"
+      lemonldap2_pguser: "{{ lookup('env', 'POSTGRES_USER') }}"
+      lemonldap2_pgpassword: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+      lemonldap2_domain: "{{ lookup('env', 'SSO_DOMAIN') }}"
+      lemonldap2_portal: "{{ lookup('env', 'LEMONLDAP2_PORTAL') | default('auth', true) }}"
+      lemonldap2_manager: "{{ lookup('env', 'LEMONLDAP2_MANAGER') | default('manager', true) }}"
+      lemonldap2_api: "{{ lookup('env', 'LEMONLDAP2_API') | default('manager-api', true) }}"
+      lemonldap2_langs: "{{ lookup('env', 'LEMONLDAP2_LANGS') | default('en, fr, vi, it, ar, de, fi, tr, pl', true) }}"
+      lemonldap2_loglevel: "{{ lookup('env', 'LEMONLDAP2_LOGLEVEL') | default('notice', true) }}"
+      lemonldap2_sfaissuer: "{{ lookup('env', 'LEMONLDAP2_SFAISSUER') | default('FusionIAM', true) }}"
+      lemonldap2_sfamanagerrule: "{{ lookup('env', 'LEMONLDAP2_SFAMANAGERRULE') | default('1', true) }}"
+      lemonldap2_passwordpolicymindigit: "{{ lookup('env', 'LEMONLDAP2_PASSWORDPOLICYMINDIGIT') | default(0, true) }}"
+      lemonldap2_passwordpolicyminlower: "{{ lookup('env', 'LEMONLDAP2_PASSWORDPOLICYMINLOWER') | default(0, true) }}"
+      lemonldap2_passwordpolicyminsize: "{{ lookup('env', 'LEMONLDAP2_PASSWORDPOLICYMINSIZE') | default(0, true) }}"
+      lemonldap2_passwordpolicyminspechar: "{{ lookup('env', 'LEMONLDAP2_PASSWORDPOLICYMINSPECHAR') | default(0, true) }}"
+      lemonldap2_passwordpolicyminupper: "{{ lookup('env', 'LEMONLDAP2_PASSWORDPOLICYMINUPPER') | default(0, true) }}"
+      lemonldap2_passwordpolicyspecialchar: "{{ lookup('env', 'LEMONLDAP2_PASSWORDPOLICYSPECIALCHAR') | default('! @ # $ % & * ( ) - = + [ ] { } ; : , . / ?', true) }}"
+      lemonldap2_ldaphost: "{{ lookup('env', 'LDAP_HOST') }}"
+      lemonldap2_ldapport: "{{ lookup('env', 'LDAP_PORT') }}"
+      lemonldap2_ldapadmindn: "{{ lookup('env', 'ADMIN_LDAP_DN') | default ('cn=admin,dc=fusioniam,dc=org', true) }}"
+      lemonldap2_ldapadminpassword: "{{ lookup('env', 'ADMIN_LDAP_PASSWORD') }}"
+      lemonldap2_ldapusername: "{{ lookup('env', 'LEMONLDAP2_LDAP_USERNAME') }}"
+      lemonldap2_ldappassword: "{{ lookup('env', 'LEMONLDAP2_LDAP_ASSWORD') }}"
+      lemonldap2_ldapbase: "{{ lookup('env', 'LEMONLDAP2_LDAPBASE') | default('dc=fusioniam,dc=org', true) }}"
+      lemonldap2_oidcpriv: "{{ lookup('env', 'LEMONLDAP2_OIDCPRIV') }}"
+      lemonldap2_oidcpub: "{{ lookup('env', 'LEMONLDAP2_OIDCPUB') }}"
+      lemonldap2_samlpriv: "{{ lookup('env', 'LEMONLDAP2_SAMLPRIV') }}"
+      lemonldap2_samlpub: "{{ lookup('env', 'LEMONLDAP2_SAMLPUB') }}"
+      lemonldap2_managerapipassword: "{{ lookup('env', 'LEMONLDAP2_MANAGERAPIPASSWORD') }}"
+      lemonldap2_portaldisplayresetpassword: "{{ lookup('env', 'LEMONLDAP2_PORTALDISPLAYRESETPASSWORD') | default(1, true) }}"
+      lemonldap2_portaldisplaychangepassword: "{{ lookup('env', 'LEMONLDAP2_PORTALDISPLAYCHANGEPASSWORD') | default(1, true) }}"
+      lemonldap2_requiretoken: "{{ lookup('env', 'LEMONLDAP2_REQUIRETOKEN') | default(1, true) }}"
+      lemonldap2_singlesession: "{{ lookup('env', 'LEMONLDAP2_SINGLESESSION') | default(0, true)}}"
+      lemonldap2_mailldapfilter: "{{ lookup('env', 'LEMONLDAP2_MAILLDAPFILTER') | default('(&(objectClass=inetOrgPerson)(mail=$mail))', true)}}"
+
+      lemonldap2_whitepages_name: "{{ lookup('env', 'WHITEPAGES_NAME') }}"
+      lemonldap2_whitepages_host: "{{ lookup('env', 'WHITEPAGES_HOST') }}"
+      lemonldap2_whitepages_port: "{{ lookup('env', 'WHITEPAGES_PORT') }}"
+      lemonldap2_servicedesk_name: "{{ lookup('env', 'SERVICEDESK_NAME') }}"
+      lemonldap2_servicedesk_host: "{{ lookup('env', 'SERVICEDESK_HOST') }}"
+      lemonldap2_servicedesk_port: "{{ lookup('env', 'SERVICEDESK_PORT') }}"
+      lemonldap2_fusiondirectory_name: "{{ lookup('env', 'FUSIONDIRECTORY_NAME') }}"
+      lemonldap2_fusiondirectory_host: "{{ lookup('env', 'FUSIONDIRECTORY_HOST') }}"
+      lemonldap2_fusiondirectory_port: "{{ lookup('env', 'FUSIONDIRECTORY_PORT') }}"
+
+  tasks:
+  - name: LemonLDAP main configuration file
+    template:
+        src: templates/lemonldap-ng.ini.j2
+        dest: /etc/lemonldap-ng/lemonldap-ng.ini
+        mode: '0644'
+
+  - name: Nginx vhosts
+    template:
+        src: "templates/{{ item }}-nginx.conf.j2"
+        dest: "/etc/nginx/conf.d/{{ item }}-nginx.conf"
+        mode: '0644'
+    loop:
+        - api
+        - manager
+        - handler
+        - portal
+        - wp
+        - sd
+        - fd
+
+  - name: Enable nginx log formats
+    template:
+        src: templates/nginx-lmlog.conf
+        dest: /etc/nginx/conf.d/000-nginx-lmlog.conf
+        mode: '0644'
+
+  - name: Manage API auth file
+    copy:
+        content: "manager:{{ lemonldap2_managerapipassword | password_hash('sha256', 'sKX3U2HkT9CY') }}"
+        dest: /etc/lemonldap-ng/manager.htpasswd
+        mode: '0600'
+
+  - name: Remove unused vhosts
+    file:
+        path: "/etc/nginx/conf.d/{{ item }}-nginx.conf"
+        state: absent
+    loop:
+        - test
+
+  - name: LLNG database configuration
+    import_tasks: llng_config_db.yml
+
+  - name: LLNG basic configuration
+    import_tasks: llng_config_base.yml
+  
+  - name: LLNG session config
+    import_tasks: llng_config_sessions.yml
+
+  - name: LLNG authentication config
+    import_tasks: llng_config_auth.yml
+
+  - name: LLNG issuers config
+    import_tasks: llng_config_issuers.yml

@@ -1,0 +1,64 @@
+- name: Create LDAP technical account
+  ldap_entry:
+    dn: "cn={{ lemonldap2_ldapusername }},ou=dsa,o=admin,dc=fusioniam,dc=org"
+    server_uri: "ldap://{{ lemonldap2_ldaphost }}:{{ lemonldap2_ldapport }}/"
+    bind_dn: "{{ lemonldap2_ldapadmindn }}"
+    bind_pw: "{{ lemonldap2_ldapadminpassword }}"
+    objectClass:
+      - simpleSecurityObject
+      - organizationalRole
+    attributes:
+      description: "LemonLDAP::NG"
+      userPassword: "{{ lemonldap2_ldappassword }}"
+
+- name: Add tech account to write-all ACL
+  ldap_attr:
+    server_uri: "ldap://{{ lemonldap2_ldaphost }}:{{ lemonldap2_ldapport }}/"
+    bind_dn: "{{ lemonldap2_ldapadmindn }}"
+    bind_pw: "{{ lemonldap2_ldapadminpassword }}"
+    dn: cn=acl-write-all,ou=groups,o=admin,dc=fusioniam,dc=org
+    name: member
+    values: "cn={{ lemonldap2_ldapusername }},ou=dsa,o=admin,dc=fusioniam,dc=org"
+    state: present
+
+- name: Set Auth config
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: authentication
+        value: LDAP
+      - name: userDB
+        value: LDAP
+      - name: passwordDB
+        value: LDAP
+      - name: registerDB
+        value: Null
+      - name: ldapPort
+        value: "{{ lemonldap2_ldapport }}"
+      - name: ldapServer
+        value: "ldap://{{ lemonldap2_ldaphost}}:{{ lemonldap2_ldapport }}/"
+      - name: managerDn
+        value: "cn={{ lemonldap2_ldapusername }},ou=dsa,o=admin,dc=fusioniam,dc=org"
+      - name: managerPassword
+        value: "{{ lemonldap2_ldappassword }}"
+      - name: ldapBase
+        value: "{{ lemonldap2_ldapbase }}"
+      - name: ldapGroupBase
+        value: "dc=fusioniam,dc=org"
+      - name: ldapGroupRecursive
+        value: 1
+      - name: ldapPpolicyControl
+        value: 1
+      - name: "ldapExportedVars/uid"
+        value: uid
+      - name: "ldapExportedVars/cn"
+        value: cn
+      - name: "ldapExportedVars/sn"
+        value: sn
+      - name: "ldapExportedVars/givenName"
+        value: givenName
+      - name: "ldapExportedVars/mail"
+        value: mail
+      - name: mailLDAPFilter
+        value: "{{ lemonldap2_mailldapfilter }}"

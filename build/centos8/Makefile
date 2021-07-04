@@ -6,6 +6,7 @@ VVERSION=`cat $(FVERSION)`
 
 all:
 	make -B base
+	make -B llng
 	make -B openldap
 	make -B whitepages
 
@@ -14,6 +15,9 @@ base:
 
 clean:
 	$(CTN) rmi -f $(IMAGENAME):$(VVERSION)
+
+llng:
+	cd lemonldap-ng ; make -B all
 
 openldap:
 	cd openldap-ltb ; make -B all

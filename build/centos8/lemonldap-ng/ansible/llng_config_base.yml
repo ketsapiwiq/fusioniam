@@ -1,0 +1,105 @@
+- name: Import initial config
+  command: >
+      /usr/libexec/lemonldap-ng/bin/convertConfig -o
+
+- name: Set URLs
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: domain
+        value: "{{ lemonldap2_domain }}"
+      - name: port
+        value: 443
+      - name: https
+        value: 1
+      - name: mailUrl
+        value: "https://{{ lemonldap2_portal }}.{{ lemonldap2_domain }}/resetpwd"
+      - name: portal
+        value: "https://{{ lemonldap2_portal }}.{{ lemonldap2_domain }}/"
+      - name: registerUrl
+        value: "https://{{ lemonldap2_portal }}.{{ lemonldap2_domain }}/register"
+      - name: reloadUrls/localhost
+        value: "http://reload.{{ lemonldap2_domain }}/reload"
+      - name: applicationList/2administration/manager/options/uri
+        value: "https://{{ lemonldap2_manager }}.{{ lemonldap2_domain }}/manager.html"
+      - name: applicationList/2administration/notifications/options/uri
+        value: "https://{{ lemonldap2_manager }}.{{ lemonldap2_domain }}/notifications.html"
+      - name: applicationList/2administration/sessions/options/uri
+        value: "https://{{ lemonldap2_manager }}.{{ lemonldap2_domain }}/sessions.html"
+      - name: "locationRules/{{ lemonldap2_portal }}.{{ lemonldap2_domain }}/default"
+        value: "accept"
+      - name: "locationRules/{{ lemonldap2_manager }}.{{ lemonldap2_domain }}/default"
+        value: "inGroup('access-llngmanager')"
+
+- name: Set Portal configuration
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: "portalDisplayRegister"
+        value: 0
+      - name: "portalCheckLogins"
+        value: 0
+      - name: "portalDisplayResetPassword"
+        value: "{{ lemonldap2_portaldisplayresetpassword }}"
+      - name: "portalDisplayOidcConsents"
+        value: 0
+      - name: "portalDisplayAppslist"
+        value: 1
+      - name: "portalDisplayChangePassword"
+        value: "{{ lemonldap2_portaldisplaychangepassword }}"
+      - name: "portalDisplayLoginHistory"
+        value: 1
+      - name: "portalDisplayLogout"
+        value: 1
+      - name: "portalDisplayPasswordPolicy"
+        value: 1
+      - name: "portalDisplayRefreshMyRights"
+        value: 1
+      - name: "requireToken"
+        value: "{{ lemonldap2_requiretoken }}"
+      - name: "singleSession"
+        value: "{{ lemonldap2_singlesession }}"
+        
+- name: Set LLNG Cookie configuration
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: "securedCookie"
+        value: 1
+      - name: "cookieName"
+        value: "fusioniam-{{ lookup('env', 'CUSTOMERID') }}"
+
+- name: Set 2F parameters
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: "totp2fSelfRegistration"
+        value: 1
+      - name: "totp2fActivation"
+        value: 1
+      - name: "totp2fIssuer"
+        value: "{{ lemonldap2_sfaissuer }}"
+      - name: "sfManagerRule"
+        value: "{{ lemonldap2_sfamanagerrule }}"
+
+- name: Set ppolicy
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+    - name: passwordPolicyMinDigit
+      value: "{{ lemonldap2_passwordpolicymindigit }}"
+    - name: passwordPolicyMinLower
+      value: "{{ lemonldap2_passwordpolicyminlower }}"
+    - name: passwordPolicyMinSize
+      value: "{{ lemonldap2_passwordpolicyminsize }}"
+    - name: passwordPolicyMinSpeChar
+      value: "{{ lemonldap2_passwordpolicyminspechar }}"
+    - name: passwordPolicyMinUpper
+      value: "{{ lemonldap2_passwordpolicyminupper }}"
+    - name: passwordPolicySpecialChar
+      value: "{{ lemonldap2_passwordpolicyspecialchar }}"

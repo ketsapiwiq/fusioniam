@@ -57,18 +57,35 @@ Configuration parameters are set as environment variables.
 | ACCDATAROOTPW                     | Password of OpenLDAP main database admin      |
 | ADMIN_LDAP_PASSWORD               | Password of admin account                     |
 | CUSTOMERID                        | ID of the organization / customer             |
+| FUSIONDIRECTORY_HOST              | Internal host for FD                          |
 | FUSIONDIRECTORY_LDAP_PASSWORD     | Password of FD service account                |
 | FUSIONDIRECTORY_LDAP_USERNAME     | Identifier of FD service account              |
+| FUSIONDIRECTORY_NAME              | Virtual host name for FD                      |
+| FUSIONDIRECTORY_PORT              | Internal port for FD                          |
 | LDAP_HOST                         | Hostname of LDAP server                       |
 | LDAP_PORT                         | Port of LDAP server                           |
+| LEMONLDAP2_LDAP_PASSWORD          | Password of LL::NG service account            |
+| LEMONLDAP2_LDAP_USERNAME          | Identifier of LL::NG service account          |
+| LEMONLDAP2_OIDCPRIV               | Path to OIDC private key                      |
+| LEMONLDAP2_OIDCPUB                | Path to OIDC public key                       |
+| LEMONLDAP2_SAMLPRIV               | Path to SAML private key                      |
+| LEMONLDAP2_SAMLPUB                | Path to SAML public key or certificate        |
 | LSC_LDAP_PASSWORD                 | Password of LSC service account               |
 | LSC_LDAP_USERNAME                 | Identifier of LSC service account             |
+| POSTGRES_HOST                     | Host of database server                       |
 | POSTGRES_PASSWORD                 | Password of database account                  |
+| POSTGRES_PORT                     | Port of database server                       |
 | POSTGRES_USER                     | Login of database account                     |
+| SERVICEDESK_HOST                  | Internal host for SD                          |
 | SERVICEDESK_LDAP_PASSWORD         | Password of SD service account                |
 | SERVICEDESK_LDAP_USERNAME         | Identifier of SD service account              |
+| SERVICEDESK_NAME                  | Virtual host name for SD                      |
+| SERVICEDESK_PORT                  | Internal port for SD                          |
+| WHITEPAGES_HOST                   | Internal host for WP                          |
 | WHITEPAGES_LDAP_PASSWORD          | Password of WP service account                |
 | WHITEPAGES_LDAP_USERNAME          | Identifier of WP service account              |
+| WHITEPAGES_NAME                   | Virtual host name for WP                      |
+| WHITEPAGES_PORT                   | Internal port for WP                          |
 
 An example in this file is available in `run/ENVVAR.example`.
 
@@ -84,6 +101,15 @@ We use the following options:
 * `--detach=true`: detach container
 * `--no-hosts`: do not copy hosts file
 * `--network=slirp4netns:allow_host_loopback=true`: connect to host loopback interface
+
+| Service           | Internal port |
+|-------------------|---------------|
+| OpenLDAP LTB      | 33389         |
+| PostgreSQL        | 33432         |
+| LemonLDAP::NG     | 8080          |
+| Fusion Directory  | 8081          |
+| Service Desk      | 8082          |
+| White Pages       | 8083          |
 
 #### FIDS
 
@@ -137,7 +163,7 @@ podman run \
   --env-file=./run/ENVVAR.example \
   -v ./run/volumes/wp-run:/var/run/php-fpm/ \
   --rm=true \
-  -p 127.0.0.1:8080:8080 \
+  -p 127.0.0.1:8083:8080 \
   --name=fusioniam-white-pages-nginx \
   --detach=true \
   --no-hosts \
@@ -155,6 +181,16 @@ podman stop fusioniam-white-pages-nginx fusioniam-white-pages-php-fpm
 Create volumes:
 ```
 mkdir -p run/volumes/sso-data
+mkdir -p run/volumes/llng-run
+mkdir -p run/volumes/llng-cache
+mkdir -p run/volumes/llng-keys
+```
+
+Initialize keys for SAML and OpenID Connect services:
+```
+openssl req -new -newkey rsa:4096 -keyout run/volumes/llng-keys/saml.key -nodes -out run/volumes/llng-keys/saml.pem -x509 -days 3650
+openssl genrsa -out run/volumes/llng-keys/oidc.key 4096
+openssl rsa -pubout -in run/volumes/llng-keys/oidc.key -out run/volumes/llng-keys/oidc_pub.key
 ```
 
 Start database:
@@ -168,4 +204,51 @@ podman run \
   --detach=true \
   --no-hosts \
   docker.io/library/postgres
+```
+
+Start SSO server:
+```
+podman run \
+  --env-file=./run/ENVVAR.example \
+  -v ./run/volumes/llng-run:/run/llng-fastcgi-server \
+  -v ./run/volumes/llng-cache:/var/cache/lemonldap-ng \
+  -v ./run/volumes/llng-keys:/etc/lemonldap-ng-keys \
+  --rm=true \
+  --name=fusioniam-access-manager-fastcgi-server \
+  --detach=true \
+  --no-hosts \
+  --network=slirp4netns:allow_host_loopback=true \
+  --entrypoint='["/bin/bash","/run-ct.sh","llng-fastcgi-server"]' \
+  gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1
+```
+
+```
+podman run \
+  --env-file=./run/ENVVAR.example \
+  -v ./run/volumes/llng-run:/run/llng-fastcgi-server \
+  -v ./run/volumes/llng-cache:/var/cache/lemonldap-ng \
+  -v ./run/volumes/llng-keys:/etc/lemonldap-ng-keys \
+  --rm=true \
+  -p 127.0.0.1:8080:8080 \
+  --name=fusioniam-access-manager-nginx \
+  --detach=true \
+  --no-hosts \
+  --network=slirp4netns:allow_host_loopback=true \
+  --entrypoint='["/bin/bash","/run-ct.sh","nginx"]' \
+  gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1
+```
+
+```
+podman run \
+  --env-file=./run/ENVVAR.example \
+  -v ./run/volumes/llng-run:/run/llng-fastcgi-server \
+  -v ./run/volumes/llng-cache:/var/cache/lemonldap-ng \
+  -v ./run/volumes/llng-keys:/etc/lemonldap-ng-keys \
+  --rm=true \
+  --name=fusioniam-access-manager-cron \
+  --detach=true \
+  --no-hosts \
+  --network=slirp4netns:allow_host_loopback=true \
+  --entrypoint='["/bin/bash","/run-ct.sh","purge-sessions"]' \
+  gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1
 ```
