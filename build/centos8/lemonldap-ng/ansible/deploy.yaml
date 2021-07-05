@@ -25,7 +25,7 @@
       lemonldap2_ldapadmindn: "{{ lookup('env', 'ADMIN_LDAP_DN') | default ('cn=admin,dc=fusioniam,dc=org', true) }}"
       lemonldap2_ldapadminpassword: "{{ lookup('env', 'ADMIN_LDAP_PASSWORD') }}"
       lemonldap2_ldapusername: "{{ lookup('env', 'LEMONLDAP2_LDAP_USERNAME') }}"
-      lemonldap2_ldappassword: "{{ lookup('env', 'LEMONLDAP2_LDAP_ASSWORD') }}"
+      lemonldap2_ldappassword: "{{ lookup('env', 'LEMONLDAP2_LDAP_PASSWORD') }}"
       lemonldap2_ldapbase: "{{ lookup('env', 'LEMONLDAP2_LDAPBASE') | default('dc=fusioniam,dc=org', true) }}"
       lemonldap2_oidcpriv: "{{ lookup('env', 'LEMONLDAP2_OIDCPRIV') }}"
       lemonldap2_oidcpub: "{{ lookup('env', 'LEMONLDAP2_OIDCPUB') }}"
