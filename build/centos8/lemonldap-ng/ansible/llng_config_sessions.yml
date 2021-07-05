@@ -15,7 +15,7 @@
       value: "{{ item.value }}"
   loop:
     - key: DataSource
-      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+      value: "DBI:Pg:database={{ lemonldap2_pguser }};host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
     - key: TableName
       value: sessions
     - key: UserName
@@ -31,7 +31,7 @@
       value: "{{ item.value }}"
   loop:
     - key: DataSource
-      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+      value: "DBI:Pg:database={{ lemonldap2_pguser }};host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
     - key: TableName
       value: psessions
     - key: UserName
@@ -47,7 +47,7 @@
       value: "{{ item.value }}"
   loop:
     - key: DataSource
-      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+      value: "DBI:Pg:database={{ lemonldap2_pguser }};host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
     - key: TableName
       value: samlsessions
     - key: UserName
@@ -63,7 +63,7 @@
       value: "{{ item.value }}"
   loop:
     - key: DataSource
-      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+      value: "DBI:Pg:database={{ lemonldap2_pguser }};host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
     - key: TableName
       value: oidcsessions
     - key: UserName
@@ -77,7 +77,7 @@
       value: "{{ item.value }}"
   loop:
     - key: DataSource
-      value: "DBI:Pg:database=lemonldap;host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
+      value: "DBI:Pg:database={{ lemonldap2_pguser }};host={{ lemonldap2_pghost }};port={{ lemonldap2_pgport }}"
     - key: TableName
       value: cassessions
     - key: UserName
