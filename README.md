@@ -257,3 +257,42 @@ podman run \
   --entrypoint='["/bin/bash","/run-ct.sh","purge-sessions"]' \
   gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1
 ```
+
+### Start reverse proxy
+
+On your host, start a reverse proxy that will connect to containers.
+
+For example with Apache:
+```
+vi /etc/apache2/sites-available/demo-fusioniam.conf
+```
+
+```
+<VirtualHost *:443>
+  ServerName auth.demo.fusioniam.org
+  ServerAlias manager.demo.fusioniam.org
+  ServerAlias api-manager.demo.fusioniam.org
+  ServerAlias wp.demo.fusioniam.org
+  ServerAlias sd.demo.fusioniam.org
+  ServerAlias fd.demo.fusioniam.org
+
+  SSLEngine On
+  SSLCertificateFile /etc/apache2/demo.fusioniam.org.pem
+  SSLCertificateKeyFile /etc/apache2/demo.fusioniam.org.key
+
+  ProxyPreserveHost on
+  ProxyPass / http://localhost:8080/
+  ProxyPassReverse / http://localhost:8080/
+</VirtualHost>
+```
+
+```
+a2ensite demo-fusioniam.conf
+```
+
+Configure DNS or add this to your `/etc/hosts`:
+```
+127.0.0.1       auth.demo.fusioniam.org manager.demo.fusioniam.org api-manager.demo.fusioniam.org wp.demo.fusioniam.org sd.demo.fusioniam.org fd.demo.fusioniam.org
+```
+
+Connect to https://auth.demo.fusioniam.org and authentication with `fusioniam-admin` account.
