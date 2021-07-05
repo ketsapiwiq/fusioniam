@@ -193,6 +193,11 @@ openssl genrsa -out run/volumes/llng-keys/oidc.key 4096
 openssl rsa -pubout -in run/volumes/llng-keys/oidc.key -out run/volumes/llng-keys/oidc_pub.key
 ```
 
+Change owner of volumes:
+```
+podman unshare chown 48:48 -R run/volumes/llng-*
+```
+
 Start database:
 ```
 podman run \
