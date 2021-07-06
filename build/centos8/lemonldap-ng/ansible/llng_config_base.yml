@@ -2,7 +2,7 @@
   command: >
       /usr/libexec/lemonldap-ng/bin/convertConfig -o
 
-- name: Set URLs
+- name: Set URLs and applications
   lemonldap_config:
       name: "{{ item.name }}"
       value: "{{ item.value }}"
@@ -21,6 +21,16 @@
         value: "https://{{ lemonldap2_portal }}.{{ lemonldap2_domain }}/register"
       - name: reloadUrls/localhost
         value: "http://reload.{{ lemonldap2_domain }}/reload"
+      - name: "locationRules/test1.example.com/default"
+        value: "deny"
+      - name: "locationRules/test2.example.com/default"
+        value: "deny"
+      - name: "locationRules/manager.example.com/default"
+        value: "deny"
+      - name: applicationList/3documentation/localdoc/options/display
+        value: "off"
+      - name: applicationList/3documentation/officialwebsite/options/display
+        value: "off"
       - name: applicationList/2administration/manager/options/uri
         value: "https://{{ lemonldap2_manager }}.{{ lemonldap2_domain }}/manager.html"
       - name: applicationList/2administration/notifications/options/uri
@@ -31,6 +41,52 @@
         value: "accept"
       - name: "locationRules/{{ lemonldap2_manager }}.{{ lemonldap2_domain }}/default"
         value: "inGroup('access-llngmanager')"
+      - name: applicationList/1applications/type
+        value: "category"
+      - name: applicationList/1applications/catname
+        value: "Applications"
+      - name: applicationList/1applications/whitepages/type
+        value: "application"
+      - name: applicationList/1applications/whitepages/options/description
+        value: "Browse directory"
+      - name: applicationList/1applications/whitepages/options/display
+        value: "auto"
+      - name: applicationList/1applications/whitepages/options/logo
+        value: "thumbnail.png"
+      - name: applicationList/1applications/whitepages/options/name
+        value: "White pages"
+      - name: applicationList/1applications/whitepages/options/uri
+        value: "https://{{ lemonldap2_whitepages_name }}.{{ lemonldap2_domain }}/"
+      - name: "locationRules/{{ lemonldap2_whitepages_name }}.{{ lemonldap2_domain }}/default"
+        value: "inGroup('access-whitepages')"
+      - name: applicationList/1applications/servicedesk/type
+        value: "application"
+      - name: applicationList/1applications/servicedesk/options/description
+        value: "Manage user accounts"
+      - name: applicationList/1applications/servicedesk/options/display
+        value: "auto"
+      - name: applicationList/1applications/servicedesk/options/logo
+        value: "help.png"
+      - name: applicationList/1applications/servicedesk/options/name
+        value: "Service desk"
+      - name: applicationList/1applications/servicedesk/options/uri
+        value: "https://{{ lemonldap2_servicedesk_name }}.{{ lemonldap2_domain }}/"
+      - name: "locationRules/{{ lemonldap2_servicedesk_name }}.{{ lemonldap2_domain }}/default"
+        value: "inGroup('access-servicedesk')"
+      - name: applicationList/1applications/fusiondirectory/type
+        value: "application"
+      - name: applicationList/1applications/fusiondirectory/options/description
+        value: "Edit directory entries"
+      - name: applicationList/1applications/fusiondirectory/options/display
+        value: "auto"
+      - name: applicationList/1applications/fusiondirectory/options/logo
+        value: "folder.png"
+      - name: applicationList/1applications/fusiondirectory/options/name
+        value: "Directory manager"
+      - name: applicationList/1applications/fusiondirectory/options/uri
+        value: "https://{{ lemonldap2_fusiondirectory_name }}.{{ lemonldap2_domain }}/"
+      - name: "locationRules/{{ lemonldap2_fusiondirectory_name }}.{{ lemonldap2_domain }}/default"
+        value: "inGroup('access-fusiondirectory')"
 
 - name: Set Portal configuration
   lemonldap_config:
