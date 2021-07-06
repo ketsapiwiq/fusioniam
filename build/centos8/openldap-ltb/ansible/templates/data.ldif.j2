@@ -152,17 +152,34 @@ dn: cn=access-llngmanager,ou=groups,o=admin,dc=fusioniam,dc=org
 objectClass: top
 objectClass: groupOfNames
 objectClass: gosaGroupOfNames
-gosaGroupObjects: [U]
+gosaGroupObjects: [G]
 cn: access-llngmanager
-member: uid=fusioniam-admin,ou=users,o=admin,dc=fusioniam,dc=org
+member: cn=super-admins,ou=groups,o=admin,dc=fusioniam,dc=org
+
+dn: cn=access-fusiondirectory,ou=groups,o=admin,dc=fusioniam,dc=org
+objectClass: top
+objectClass: groupOfNames
+objectClass: gosaGroupOfNames
+gosaGroupObjects: [G]
+cn: access-fusiondirectory
+member: cn=super-admins,ou=groups,o=admin,dc=fusioniam,dc=org
 
 dn: cn=access-servicedesk,ou=groups,o=admin,dc=fusioniam,dc=org
 objectClass: top
 objectClass: groupOfNames
 objectClass: gosaGroupOfNames
-gosaGroupObjects: [U]
+gosaGroupObjects: [G]
 cn: access-servicedesk
-member: uid=fusioniam-admin,ou=users,o=admin,dc=fusioniam,dc=org
+member: cn=super-admins,ou=groups,o=admin,dc=fusioniam,dc=org
+
+dn: cn=access-whitepages,ou=groups,o=admin,dc=fusioniam,dc=org
+objectClass: top
+objectClass: groupOfNames
+objectClass: gosaGroupOfNames
+gosaGroupObjects: [G]
+cn: access-whitepages
+member: cn=super-admins,ou=groups,o=admin,dc=fusioniam,dc=org
+member: cn=all,ou=groups,o={{ CUSTOMERID }},dc=fusioniam,dc=org
 
 dn: o={{ CUSTOMERID }},dc=fusioniam,dc=org
 objectClass: top
