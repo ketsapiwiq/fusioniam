@@ -46,6 +46,8 @@
         value: "{{ lemonldap2_ldapbase }}"
       - name: ldapGroupBase
         value: "dc=fusioniam,dc=org"
+      - name: ldapGroupObjectClass
+        value: "gosaGroupOfNames"
       - name: ldapGroupRecursive
         value: 1
       - name: ldapPpolicyControl

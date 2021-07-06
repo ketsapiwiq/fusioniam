@@ -197,7 +197,9 @@ ou: groups
 dn: cn=all,ou=groups,o={{ CUSTOMERID }},dc=fusioniam,dc=org
 objectClass: top
 objectClass: groupOfURLs
+objectClass: gosaGroupOfNames
 objectClass: extensibleObject
+gosaGroupObjects: [G]
 cn: all
 memberURL: ldap:///ou=users,o={{ CUSTOMERID }},dc=fusioniam,dc=org??one?(objectClass=inetOrgPerson)
 
