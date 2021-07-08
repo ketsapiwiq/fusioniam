@@ -127,6 +127,8 @@
         value: 1
       - name: "cookieName"
         value: "fusioniam-{{ lookup('env', 'CUSTOMERID') }}"
+      - name: "sameSite"
+        value: "None"
 
 - name: Set 2F parameters
   lemonldap_config:
