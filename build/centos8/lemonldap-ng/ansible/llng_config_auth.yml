@@ -64,3 +64,13 @@
         value: mail
       - name: mailLDAPFilter
         value: "{{ lemonldap2_mailldapfilter }}"
+
+- name: Set macros
+  lemonldap_config:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+  loop:
+      - name: "macros/profile_url"
+        value: '"https://{{ lemonldap2_whitepages_name }}.{{ lemonldap2_domain }}/index.php?page=display&dn=".$_dn'
+      - name: "macros/photo_url"
+        value: '"https://{{ lemonldap2_whitepages_name }}.{{ lemonldap2_domain }}/photo.php?dn=".$_dn'
