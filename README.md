@@ -4,13 +4,14 @@ This is the main [FusionIAM](https://www.fusioniam.org) project.
 
 FusionIAM is a software federation to offer a global open source IAM solution.
 
-| Short name | Long name                    | Technical component           |
-|------------|------------------------------|-------------------------------|
-| FIDS       | FusionIAM Directory Server   | OpenLDAP LTB                  |
-| FIDM       | FusionIAM Directory Manager  | Fusion Directory              |
-| FIAM       | FusionIAM Access Manager     | LemonLDAP::NG                 |
-| FIWP       | FusionIAM White Pages        | LTB White Pages               |
-| FISD       | FusionIAM Service Desk       | LTB Service Desk              |
+| Short name | Long name                    | Technical component            |
+|------------|------------------------------|--------------------------------|
+| FIDS       | FusionIAM Directory Server   | OpenLDAP LTB                   |
+| FIDM       | FusionIAM Directory Manager  | Fusion Directory               |
+| FIAM       | FusionIAM Access Manager     | LemonLDAP::NG                  |
+| FIWP       | FusionIAM White Pages        | LTB White Pages                |
+| FISD       | FusionIAM Service Desk       | LTB Service Desk               |
+| FISC       | FusionIAM Sync Connector     | LDAP Synchronization Connector |
 
 ## Build
 
