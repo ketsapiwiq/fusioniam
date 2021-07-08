@@ -71,6 +71,8 @@ Configuration parameters are set as environment variables.
 | LEMONLDAP2_OIDCPUB                | Path to OIDC public key                       |
 | LEMONLDAP2_SAMLPRIV               | Path to SAML private key                      |
 | LEMONLDAP2_SAMLPUB                | Path to SAML public key or certificate        |
+| LEMONLDAP2_UNPROTECT_PHOTO_URL    | Allow unauthenticated access to user photo    |
+| LEMONLDAP2_UNPROTECT_PROFILE_URL  | Allow unauthenticated access to user profile  |
 | LSC_LDAP_PASSWORD                 | Password of LSC service account               |
 | LSC_LDAP_USERNAME                 | Identifier of LSC service account             |
 | POSTGRES_HOST                     | Host of database server                       |

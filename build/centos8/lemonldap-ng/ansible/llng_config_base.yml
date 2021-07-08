@@ -88,6 +88,20 @@
       - name: "locationRules/{{ lemonldap2_fusiondirectory_name }}.{{ lemonldap2_domain }}/default"
         value: "inGroup('access-fusiondirectory')"
 
+- name: Unprotect profile URL
+  lemonldap_config:
+      name: "locationRules:{{ lemonldap2_whitepages_name }}.{{ lemonldap2_domain }}:^/index\\.php\\?page=display&dn="
+      value: "unprotect"
+      sep: ":"
+  when: lemonldap2_unprotect_profile_url|bool
+
+- name: Unprotect photo URL
+  lemonldap_config:
+      name: "locationRules:{{ lemonldap2_whitepages_name }}.{{ lemonldap2_domain }}:^/photo\\.php\\?dn="
+      value: "unprotect"
+      sep: ":"
+  when: lemonldap2_unprotect_photo_url|bool
+
 - name: Set Portal configuration
   lemonldap_config:
       name: "{{ item.name }}"

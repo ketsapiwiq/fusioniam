@@ -48,6 +48,9 @@
       lemonldap2_fusiondirectory_host: "{{ lookup('env', 'FUSIONDIRECTORY_HOST') }}"
       lemonldap2_fusiondirectory_port: "{{ lookup('env', 'FUSIONDIRECTORY_PORT') }}"
 
+      lemonldap2_unprotect_profile_url: "{{ lookup('env', 'LEMONLDAP2_UNPROTECT_PROFILE_URL') | default(0, true) }}"
+      lemonldap2_unprotect_photo_url: "{{ lookup('env', 'LEMONLDAP2_UNPROTECT_PHOTO_URL') | default(0, true) }}"
+
   tasks:
   - name: LemonLDAP main configuration file
     template:
