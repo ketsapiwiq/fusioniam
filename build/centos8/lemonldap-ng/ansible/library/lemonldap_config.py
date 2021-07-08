@@ -27,9 +27,14 @@ options:
         description:
             - Value of the configuration to enforce
         required: true
+    sep:
+        description:
+            - Separator value
+        required: false
 
 author:
     - Maxime Besson
+    - Worteks
 '''
 
 EXAMPLES = '''
@@ -59,6 +64,7 @@ def run_module():
     module_args = dict(
         name=dict(type='str', required=True),
         value=dict(type='str', required=True),
+        sep=dict(type='str', required=False, default='/'),
     )
 
     # seed the result dict in the object
@@ -82,6 +88,7 @@ def run_module():
 
     key_name = module.params['name']
     new_value = module.params['value']
+    sep = module.params['sep']
     result['name'] = key_name
     result['new_value'] = new_value
 
@@ -114,12 +121,12 @@ def run_module():
         module.exit_json(**result)
 
     # Else, modify config
-    if '/' in key_name:
-        (key_base, _, subkey)  = key_name.rpartition("/")
+    if sep in key_name:
+        (key_base, _, subkey)  = key_name.rpartition(sep)
         # use addKey
         change = Popen(
             ['/usr/libexec/lemonldap-ng/bin/lemonldap-ng-cli', 
-                '-yes', '1', '-safe', '1', 'addKey', key_base, subkey, new_value],
+                '-yes', '1', '-safe', '1', '-sep', sep, 'addKey', key_base, subkey, new_value],
             stdout=PIPE,
             stderr=PIPE
             )
