@@ -85,3 +85,10 @@ services:
       - "/run-ct.sh"
       - "nginx"
     image: "fusioniam-centos8-white-pages:v0.1"
+
+  fusioniam-service-desk:
+    ports:
+      - "8082:80"
+    volumes:
+      - "./run/servicedesk.conf.compose.example.php:/var/www/conf/config.inc.local.php"
+    image: "docker.io/ltbproject/service-desk:latest"
