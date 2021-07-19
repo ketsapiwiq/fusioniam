@@ -1,0 +1,85 @@
+version: "3.3"
+services:
+  fusioniam-directory-server:
+    env_file: ./run/ENVVAR.example
+    volumes:
+      - "./run/volumes/ldap-data:/usr/local/openldap/var/openldap-data"
+      - "./run/volumes/ldap-config:/usr/local/openldap/etc/openldap/slapd.d"
+    ports:
+      - "127.0.0.1:33389:33389"
+    container_name: fusioniam-directory-server
+    image: "fusioniam-centos8-openldap-ltb:v0.1"
+
+  fusioniam-database:
+    volumes:
+      - "./run/volumes/sso-data:/var/lib/postgresql/data"
+    env_file: ./run/ENVVAR.example
+    ports:
+      - "127.0.0.1:33432:5432"
+    container_name: fusioniam-database
+    image: docker.io/library/postgres
+
+  fusioniam-access-manager-fastcgi-server:
+    env_file: ./run/ENVVAR.example
+    volumes:
+      - "./run/volumes/llng-run:/run/llng-fastcgi-server"
+      - "./run/volumes/llng-cache:/var/cache/lemonldap-ng"
+      - "./run/volumes/llng-keys:/etc/lemonldap-ng-keys"
+    container_name: fusioniam-access-manager-fastcgi-server
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "llng-fastcgi-server"
+    image: "fusioniam-centos8-lemonldap-ng:v0.1"
+
+  fusioniam-access-manager-nginx:
+    env_file: ./run/ENVVAR.example
+    volumes:
+      - "./run/volumes/llng-run:/run/llng-fastcgi-server"
+      - "./run/volumes/llng-cache:/var/cache/lemonldap-ng"
+      - "./run/volumes/llng-keys:/etc/lemonldap-ng-keys"
+    ports:
+      - "127.0.0.1:8080:8080"
+    container_name: fusioniam-access-manager-nginx
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "nginx"
+    image: "fusioniam-centos8-lemonldap-ng:v0.1"
+
+  fusioniam-access-manager-cron:
+    env_file: ./run/ENVVAR.example
+    volumes:
+      - "./run/volumes/llng-run:/run/llng-fastcgi-server"
+      - "./run/volumes/llng-cache:/var/cache/lemonldap-ng"
+      - "./run/volumes/llng-keys:/etc/lemonldap-ng-keys"
+    container_name: fusioniam-access-manager-cron
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "purge-sessions"
+    image: "fusioniam-centos8-lemonldap-ng:v0.1"
+
+  fusioniam-white-pages-php-fpm:
+    env_file: ./run/ENVVAR.example
+    volumes:
+      - "./run/volumes/wp-run:/run/php-fpm/"
+    container_name: fusioniam-white-pages-php-fpm
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "php-fpm"
+    image: "fusioniam-centos8-white-pages:v0.1"
+
+  fusioniam-white-pages-nginx:
+    env_file: ./run/ENVVAR.example
+    volumes:
+      - "./run/volumes/wp-run:/var/run/php-fpm/"
+    ports:
+      - "127.0.0.1:8083:8080"
+    container_name: fusioniam-white-pages-nginx
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "nginx"
+    image: "fusioniam-centos8-white-pages:v0.1"
