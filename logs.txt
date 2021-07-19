@@ -1,0 +1,922 @@
+fusioniam-access-manager-nginx  | [WARNING]: provided hosts list is empty, only localhost is available. Note that
+fusioniam-access-manager-nginx  | the implicit localhost does not match 'all'
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | PLAY [localhost] ***************************************************************
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Gathering Facts] *********************************************************
+fusioniam-access-manager-nginx  | ok: [localhost]
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [LemonLDAP main configuration file] ***************************************
+fusioniam-access-manager-nginx  | changed: [localhost]
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Nginx vhosts] ************************************************************
+fusioniam-access-manager-nginx  | changed: [localhost] => (item=api)
+fusioniam-access-manager-nginx  | changed: [localhost] => (item=manager)
+fusioniam-access-manager-nginx  | changed: [localhost] => (item=handler)
+fusioniam-access-manager-nginx  | changed: [localhost] => (item=portal)
+fusioniam-access-manager-nginx  | changed: [localhost] => (item=wp)
+fusioniam-access-manager-nginx  | changed: [localhost] => (item=sd)
+fusioniam-access-manager-nginx  | changed: [localhost] => (item=fd)
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Enable nginx log formats] ************************************************
+fusioniam-access-manager-nginx  | changed: [localhost]
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Manage API auth file] ****************************************************
+fusioniam-access-manager-nginx  | changed: [localhost]
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Remove unused vhosts] ****************************************************
+fusioniam-access-manager-nginx  | changed: [localhost] => (item=test)
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Create PG Tables] ********************************************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'lmconfig', 'columns': ['cfgnum integer not null primary key', 'data text']})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'sessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'psessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'cassessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'samlsessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'oidcsessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Create PG Indices] *******************************************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_s__whattotrace', 'table': 'sessions', 'columns': "((a_session ->> '_whatToTrace'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_s__session_kind', 'table': 'sessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_s__utime', 'table': 'sessions', 'columns': "((cast (a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_s_ipaddr', 'table': 'sessions', 'columns': "((a_session ->> 'ipAddr'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_s__httpsessiontype', 'table': 'sessions', 'columns': "((a_session ->> '_httpSessionType'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_p__session_kind', 'table': 'psessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_p__httpsessiontype', 'table': 'psessions', 'columns': "((a_session ->> '_httpSessionType'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_p__session_uid', 'table': 'psessions', 'columns': "((a_session ->> '_session_uid'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_p_ipaddr', 'table': 'psessions', 'columns': "((a_session ->> 'ipAddr'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_p__whattotrace', 'table': 'psessions', 'columns': "((a_session ->> '_whatToTrace'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_a__session_kind', 'table': 'samlsessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_a__utime', 'table': 'samlsessions', 'columns': "((cast(a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_a_proxyid', 'table': 'samlsessions', 'columns': "((a_session ->> 'ProxyID'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_a__nameid', 'table': 'samlsessions', 'columns': "((a_session ->> '_nameID'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_a__assert_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_assert_id'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_a__art_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_art_id'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_a__saml_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_saml_id'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_o__session_kind', 'table': 'oidcsessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_o__utime', 'table': 'oidcsessions', 'columns': "((cast(a_session ->> '_utime' as bigint )))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_c__session_kind', 'table': 'cassessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_c__utime', 'table': 'cassessions', 'columns': "((cast(a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_c__cas_id', 'table': 'cassessions', 'columns': "((a_session ->> '_cas_id'))"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'i_c_pgtiou', 'table': 'cassessions', 'columns': "((a_session ->> 'pgtIou'))"})
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Import initial config] ***************************************************
+fusioniam-access-manager-nginx  | changed: [localhost]
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Set URLs and applications] ***********************************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'domain', 'value': 'demo.fusioniam.org'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'port', 'value': 443})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'https', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'mailUrl', 'value': 'https://auth.demo.fusioniam.org/resetpwd'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portal', 'value': 'https://auth.demo.fusioniam.org/'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'registerUrl', 'value': 'https://auth.demo.fusioniam.org/register'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'reloadUrls/localhost', 'value': 'http://reload.demo.fusioniam.org/reload'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'locationRules/test1.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'locationRules/test2.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'locationRules/manager.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/3documentation/localdoc/options/display', 'value': 'off'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/3documentation/officialwebsite/options/display', 'value': 'off'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/2administration/manager/options/uri', 'value': 'https://manager.demo.fusioniam.org/manager.html'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/2administration/notifications/options/uri', 'value': 'https://manager.demo.fusioniam.org/notifications.html'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/2administration/sessions/options/uri', 'value': 'https://manager.demo.fusioniam.org/sessions.html'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'locationRules/auth.demo.fusioniam.org/default', 'value': 'accept'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'locationRules/manager.demo.fusioniam.org/default', 'value': "inGroup('access-llngmanager')"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/type', 'value': 'category'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/catname', 'value': 'Applications'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/type', 'value': 'application'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/description', 'value': 'Browse directory'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/display', 'value': 'auto'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/logo', 'value': 'thumbnail.png'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/name', 'value': 'White pages'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/uri', 'value': 'https://wp.demo.fusioniam.org/'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'locationRules/wp.demo.fusioniam.org/default', 'value': "inGroup('access-whitepages')"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/type', 'value': 'application'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/description', 'value': 'Manage user accounts'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/display', 'value': 'auto'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/logo', 'value': 'help.png'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/name', 'value': 'Service desk'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/uri', 'value': 'https://sd.demo.fusioniam.org/'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'locationRules/sd.demo.fusioniam.org/default', 'value': "inGroup('access-servicedesk')"})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/type', 'value': 'application'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/description', 'value': 'Edit directory entries'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/display', 'value': 'auto'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/logo', 'value': 'folder.png'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/name', 'value': 'Directory manager'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/uri', 'value': 'https://fd.demo.fusioniam.org/'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'locationRules/fd.demo.fusioniam.org/default', 'value': "inGroup('access-fusiondirectory')"})
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Unprotect profile URL] ***************************************************
+fusioniam-access-manager-nginx  | skipping: [localhost]
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Unprotect photo URL] *****************************************************
+fusioniam-access-manager-nginx  | changed: [localhost]
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Set Portal configuration] ************************************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayRegister', 'value': 0})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalCheckLogins', 'value': 0})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayResetPassword', 'value': '1'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayOidcConsents', 'value': 0})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayAppslist', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayChangePassword', 'value': '1'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayLoginHistory', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayLogout', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayPasswordPolicy', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'portalDisplayRefreshMyRights', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'requireToken', 'value': '1'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'singleSession', 'value': '0'})
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Set LLNG Cookie configuration] *******************************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'securedCookie', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'cookieName', 'value': 'fusioniam-acme'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'sameSite', 'value': 'None'})
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Set 2F parameters] *******************************************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'totp2fSelfRegistration', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'totp2fActivation', 'value': 1})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'totp2fIssuer', 'value': 'FusionIAM'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'sfManagerRule', 'value': '1'})
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Set ppolicy] *************************************************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'passwordPolicyMinDigit', 'value': '0'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'passwordPolicyMinLower', 'value': '0'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'passwordPolicyMinSize', 'value': '0'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'passwordPolicyMinSpeChar', 'value': '0'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'passwordPolicyMinUpper', 'value': '0'})
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'name': 'passwordPolicySpecialChar', 'value': '! @ # $ % & * ( ) - = + [ ] { } ; : , . / ?'})
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Change session backends] *************************************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item=globalStorage)
+fusioniam-access-manager-nginx  | ok: [localhost] => (item=persistentStorage)
+fusioniam-access-manager-nginx  | ok: [localhost] => (item=samlStorage)
+fusioniam-access-manager-nginx  | ok: [localhost] => (item=casStorage)
+fusioniam-access-manager-nginx  | ok: [localhost] => (item=oidcStorage)
+fusioniam-access-manager-nginx  | 
+fusioniam-access-manager-nginx  | TASK [Change global session backends options] **********************************
+fusioniam-access-manager-nginx  | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-fastcgi-server  | [WARNING]: provided hosts list is empty, only localhost is available. Note that
+fusioniam-access-manager-fastcgi-server  | the implicit localhost does not match 'all'
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | PLAY [localhost] ***************************************************************
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Gathering Facts] *********************************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [LemonLDAP main configuration file] ***************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Nginx vhosts] ************************************************************
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'TableName', 'value': 'sessions'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Change persistent session backends options] ******************************
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'TableName', 'value': 'psessions'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Change SAML session backends options] ************************************
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'TableName', 'value': 'samlsessions'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Change OIDC session backends options] ************************************
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'TableName', 'value': 'oidcsessions'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Change CAS session backends options] *************************************
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'TableName', 'value': 'cassessions'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Create LDAP technical account] *******************************************
+fusioniam-access-manager-nginx           | changed: [localhost]
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Add tech account to write-all ACL] ***************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item=api)
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item=manager)
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item=handler)
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item=portal)
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item=wp)
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item=sd)
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item=fd)
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-nginx           | ok: [localhost]
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Set Auth config] *********************************************************
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'authentication', 'value': 'LDAP'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'userDB', 'value': 'LDAP'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'passwordDB', 'value': 'LDAP'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'registerDB', 'value': None})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapPort', 'value': '33389'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapServer', 'value': 'ldap://fusioniam-directory-server:33389/'})
+fusioniam-access-manager-fastcgi-server  | TASK [Enable nginx log formats] ************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Manage API auth file] ****************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Remove unused vhosts] ****************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item=test)
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Create PG Tables] ********************************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'lmconfig', 'columns': ['cfgnum integer not null primary key', 'data text']})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'sessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'psessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'cassessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'samlsessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'oidcsessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Create PG Indices] *******************************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_s__whattotrace', 'table': 'sessions', 'columns': "((a_session ->> '_whatToTrace'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_s__session_kind', 'table': 'sessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_s__utime', 'table': 'sessions', 'columns': "((cast (a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_s_ipaddr', 'table': 'sessions', 'columns': "((a_session ->> 'ipAddr'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_s__httpsessiontype', 'table': 'sessions', 'columns': "((a_session ->> '_httpSessionType'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_p__session_kind', 'table': 'psessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_p__httpsessiontype', 'table': 'psessions', 'columns': "((a_session ->> '_httpSessionType'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_p__session_uid', 'table': 'psessions', 'columns': "((a_session ->> '_session_uid'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_p_ipaddr', 'table': 'psessions', 'columns': "((a_session ->> 'ipAddr'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_p__whattotrace', 'table': 'psessions', 'columns': "((a_session ->> '_whatToTrace'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_a__session_kind', 'table': 'samlsessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_a__utime', 'table': 'samlsessions', 'columns': "((cast(a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_a_proxyid', 'table': 'samlsessions', 'columns': "((a_session ->> 'ProxyID'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_a__nameid', 'table': 'samlsessions', 'columns': "((a_session ->> '_nameID'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_a__assert_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_assert_id'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_a__art_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_art_id'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_a__saml_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_saml_id'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_o__session_kind', 'table': 'oidcsessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_o__utime', 'table': 'oidcsessions', 'columns': "((cast(a_session ->> '_utime' as bigint )))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_c__session_kind', 'table': 'cassessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_c__utime', 'table': 'cassessions', 'columns': "((cast(a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_c__cas_id', 'table': 'cassessions', 'columns': "((a_session ->> '_cas_id'))"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'i_c_pgtiou', 'table': 'cassessions', 'columns': "((a_session ->> 'pgtIou'))"})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Import initial config] ***************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Set URLs and applications] ***********************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'domain', 'value': 'demo.fusioniam.org'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'port', 'value': 443})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'https', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'mailUrl', 'value': 'https://auth.demo.fusioniam.org/resetpwd'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portal', 'value': 'https://auth.demo.fusioniam.org/'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'registerUrl', 'value': 'https://auth.demo.fusioniam.org/register'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'reloadUrls/localhost', 'value': 'http://reload.demo.fusioniam.org/reload'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'locationRules/test1.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'locationRules/test2.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'locationRules/manager.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/3documentation/localdoc/options/display', 'value': 'off'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/3documentation/officialwebsite/options/display', 'value': 'off'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/2administration/manager/options/uri', 'value': 'https://manager.demo.fusioniam.org/manager.html'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/2administration/notifications/options/uri', 'value': 'https://manager.demo.fusioniam.org/notifications.html'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/2administration/sessions/options/uri', 'value': 'https://manager.demo.fusioniam.org/sessions.html'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'locationRules/auth.demo.fusioniam.org/default', 'value': 'accept'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'locationRules/manager.demo.fusioniam.org/default', 'value': "inGroup('access-llngmanager')"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/type', 'value': 'category'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/catname', 'value': 'Applications'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/type', 'value': 'application'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/description', 'value': 'Browse directory'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/display', 'value': 'auto'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/logo', 'value': 'thumbnail.png'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/name', 'value': 'White pages'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/uri', 'value': 'https://wp.demo.fusioniam.org/'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'locationRules/wp.demo.fusioniam.org/default', 'value': "inGroup('access-whitepages')"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/type', 'value': 'application'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/description', 'value': 'Manage user accounts'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/display', 'value': 'auto'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/logo', 'value': 'help.png'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/name', 'value': 'Service desk'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/uri', 'value': 'https://sd.demo.fusioniam.org/'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'locationRules/sd.demo.fusioniam.org/default', 'value': "inGroup('access-servicedesk')"})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/type', 'value': 'application'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/description', 'value': 'Edit directory entries'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/display', 'value': 'auto'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/logo', 'value': 'folder.png'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/name', 'value': 'Directory manager'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/uri', 'value': 'https://fd.demo.fusioniam.org/'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'locationRules/fd.demo.fusioniam.org/default', 'value': "inGroup('access-fusiondirectory')"})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Unprotect profile URL] ***************************************************
+fusioniam-access-manager-fastcgi-server  | skipping: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Unprotect photo URL] *****************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Set Portal configuration] ************************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayRegister', 'value': 0})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalCheckLogins', 'value': 0})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayResetPassword', 'value': '1'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayOidcConsents', 'value': 0})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayAppslist', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayChangePassword', 'value': '1'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayLoginHistory', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayLogout', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayPasswordPolicy', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'portalDisplayRefreshMyRights', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'requireToken', 'value': '1'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'singleSession', 'value': '0'})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Set LLNG Cookie configuration] *******************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'securedCookie', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'cookieName', 'value': 'fusioniam-acme'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'sameSite', 'value': 'None'})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Set 2F parameters] *******************************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'totp2fSelfRegistration', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'totp2fActivation', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'totp2fIssuer', 'value': 'FusionIAM'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'sfManagerRule', 'value': '1'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'managerDn', 'value': 'cn=lemonldapng,ou=dsa,o=admin,dc=fusioniam,dc=org'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'managerPassword', 'value': 'secret'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapBase', 'value': 'dc=fusioniam,dc=org'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapGroupBase', 'value': 'dc=fusioniam,dc=org'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapGroupObjectClass', 'value': 'gosaGroupOfNames'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapGroupRecursive', 'value': 1})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapPpolicyControl', 'value': 1})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'name': 'ldapExportedVars/uid', 'value': 'uid'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'name': 'ldapExportedVars/cn', 'value': 'cn'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapExportedVars/sn', 'value': 'sn'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'ldapExportedVars/givenName', 'value': 'givenName'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'name': 'ldapExportedVars/mail', 'value': 'mail'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'mailLDAPFilter', 'value': '(&(objectClass=inetOrgPerson)(mail=$mail))'})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Set macros] **************************************************************
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'macros/profile_url', 'value': '"https://wp.demo.fusioniam.org/index.php?page=display&dn=".$_dn'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'macros/photo_url', 'value': '"https://wp.demo.fusioniam.org/photo.php?dn=".$_dn'})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Enable CAS issuer] *******************************************************
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'issuerDBCASActivation', 'value': 1})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'name': 'casAccessControlPolicy', 'value': 'error'})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Enable OIDC issuer] ******************************************************
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'oidcServicePrivateKeySig', 'value': '-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'oidcServicePublicKeySig', 'value': '-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxM7/xbgbo2y8+YN32o9f\nWBtkUOeITlB5p563FWWvih0L34B3ZUPsAJt5Xqr8t+X9CWjUXDh74HvulPU3X5v4\nGYmi+LCWgc8TuBJRN/4BEah0ey2RT4Sn4P30aPMHPAPPjFf5/v34pz78soRZfFKO\nJaniBm5TskoXPtbGix21mUApumbM25hpGt+IMqf2LqmjY2TY18sp/ApDOCNGlWF9\naj25vd3ouBfHL7GKVqfuom8CHSJHOa7YwQmwRLHdeSAtGOwqFVTHZ63QiPghLXsm\nlPwK/9LG5W/q8BKwNohawr1x6O4/sW3fMPC3k2aFWWSvXdRF/wPl+pmtKIjDbgg3\nIEnPDYeAnRnBLjW9bdcSIBXfh1oIODzkcmjASyQt+1WwmvCg+3HQlQ8cuje3AL/E\nZA5DFIiQvqsYB8+h4v74wqAGpmP2QupwfB+mqxPW5TA8qV0gTXcqgKEhdBQCpEQ7\nFAQbscebZy8NEYPMzvOxlLDXK9oTx+DgXtacqdXAnFPATWWo4se2w9GTL2jMtv4V\nP5jYaUesS9jj9VQ3hTyRP9KbsF08NdgjIw2NntRb+FsBjupIbKgKz+wqMf/VWK3T\nrcxbaXyagvFjj+ZVXz+kOYOslS/RTAFEJ0XyqSgHTpBM+xfzBkBy23BrjR3uuhNL\n2SDwKAlSj3jShY2oPJJU9dkCAwEAAQ==\n-----END PUBLIC KEY-----'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'issuerDBOpenIDConnectActivation', 'value': 1})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | TASK [Enable SAML issuer] ******************************************************
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'samlServicePrivateKeySig', 'value': '-----BEGIN PRIVATE KEY-----\n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\noq/kgbidpRMb9UaSQPZYAK7s/faXQQ==\n-----END PRIVATE KEY-----'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'samlServicePublicKeySig', 'value': '-----BEGIN CERTIFICATE-----\nMIIEljCCAn4CCQDEmCutm3HryDANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJG\nUjAeFw0yMTA3MTkxMzU1NDRaFw0zMTA3MTcxMzU1NDRaMA0xCzAJBgNVBAYTAkZS\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA236fDX5yOfOiZvZKLVF9\nUQY0Cn1o7EE8GhOB+QDMKxX9PMMQ0mttipJkXBEMs3RTtir0ckCwPf6+oztUfxTj\noZIw2b5SHgtWnZE+gODawgLVDhCFwCSKgkOBWjiyxyHYJHNZVLUVTDeK3qU0qUlU\nnVxTzj5YB+Bj0XduepEQJxM6dbqePe15Jg/y2c2zSNF3zy01ys4slSewpFKOBALM\nAP4xrJkdWhr6YCq74AUZ1MJtAZh4a8eoJ/ogGIqRpUqdH3ZP0HJ6G0YqWgaFp/3Z\notxeU7L/BwOyxtMLBBDToFdMTIueX7AA/r4T3nfzRWFVXGYaWU4XGYp10TAit8ax\nYnaS362UX+2234GhoAJ7HhwVGEMSFcgP85vnjufOVuR5pvxPEOTqhgNSb9BIQmkP\nH+o8qhHIbqNXaOaprqvQR6TbfZa7EOZxHGQe+GPi35Oy6K6/fdHsHH/fu5Cp71Fl\nIDOsqDQKQ6ryRsY8ietp/YoiNv5lkvlWpV+6heXek0PmWwFMvLU7xzoQ51guWhK9\no9H+PAn8HXB4ZxcZnSKMtKDik9jR2NKOdbtVAe7hPj6Hbqn+xZtcYP8jKR9yohwp\n2BgBpAfv1WQzTlBEngW0Xj8QwL/CnWGguT5VxVDEDyf9j0by5mRgF32hBdk52eXM\n/C9mJijHzMtO/FAnwJcZ90UCAwEAATANBgkqhkiG9w0BAQsFAAOCAgEAUoOsjcoC\nIJUTodhcWMIiZ2Ebap0vOQM9IDebthEoCU30Ewrti9VL+1xDggW9cVJGIa0OSEVv\nsU1dhejv0l9/F08Yhl0RxlDI9D37ERtkLSgvnokrZEAustahU6rWTaHzx/hBWmCi\nKymJH5aJrC5/6tplHhz3pbEBkB6G8zMzEqp8SyEDOvro3JUMOomdp4DV+nDVrZk1\nNdKyJZwyt3oJ6RoNJOdO9LjVbsS9uGllI+2ay4hQ87rtYKnzrmwWrLBTrlgkGNJh\nSKLnszi+FD888FgW2tRuQqoJ+NBu3zj3drsMddAEgkU7mwWT935W/cSOguXMj6qq\n9kstctQk8zmAWlJS6HmpA9JSS+b8q3W10bGwnOU5FVWshY/5BOVFacyqXqc9H1Te\nkMCau7aAC5sXb6q96NJSir3yNhpIwvZWt5RaAY318k7k4pKh05n0GckDOsdHjyHX\nbM+KDIMfAW46jZoEOPa3QqRrGdoM2HFBZLOlU6N5APOuOpmwlKhFynW87vwX1yH2\nOkD++dYGnl2ynTO0lsYBjpxr0tpyzFoYJsFBm1pzraxJ4aujvomVVzt500yTNllf\ngTjWmlJAG7076ry8cUT+j9kbRPblqg+ybFSZTuHSgKWbZvdWhyIy26N5Zc2qxfKe\nD5zexFlTt6oMYfdv54p+m/M1T4ADo0SX6R0=\n-----END CERTIFICATE-----'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'issuerDBSAMLActivation', 'value': 1})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'samlOrganizationName', 'value': 'FusionIAM'})
+fusioniam-access-manager-nginx           | changed: [localhost] => (item={'name': 'samlOrganizationDisplayName', 'value': 'FusionIAM'})
+fusioniam-access-manager-nginx           | ok: [localhost] => (item={'name': 'samlOrganizationURL', 'value': 'https://www.fusioniam.org'})
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | PLAY RECAP *********************************************************************
+fusioniam-access-manager-nginx           | localhost                  : ok=28   changed=13   unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+fusioniam-access-manager-nginx           | 
+fusioniam-access-manager-nginx           | 2021/07/19 15:21:10 [emerg] 2924#0: no host in upstream "???:8082/" in /etc/nginx/conf.d/sd-nginx.conf:35
+fusioniam-access-manager-nginx           | nginx: [emerg] no host in upstream "???:8082/" in /etc/nginx/conf.d/sd-nginx.conf:35
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Set ppolicy] *************************************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'passwordPolicyMinDigit', 'value': '0'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'passwordPolicyMinLower', 'value': '0'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'passwordPolicyMinSize', 'value': '0'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'passwordPolicyMinSpeChar', 'value': '0'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'passwordPolicyMinUpper', 'value': '0'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'passwordPolicySpecialChar', 'value': '! @ # $ % & * ( ) - = + [ ] { } ; : , . / ?'})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Change session backends] *************************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item=globalStorage)
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item=persistentStorage)
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item=samlStorage)
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item=casStorage)
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item=oidcStorage)
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Change global session backends options] **********************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'TableName', 'value': 'sessions'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Change persistent session backends options] ******************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'TableName', 'value': 'psessions'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Change SAML session backends options] ************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'TableName', 'value': 'samlsessions'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Change OIDC session backends options] ************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'TableName', 'value': 'oidcsessions'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Change CAS session backends options] *************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'TableName', 'value': 'cassessions'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Create LDAP technical account] *******************************************
+fusioniam-access-manager-fastcgi-server  | ok: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Add tech account to write-all ACL] ***************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost]
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Set Auth config] *********************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'authentication', 'value': 'LDAP'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'userDB', 'value': 'LDAP'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'passwordDB', 'value': 'LDAP'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'registerDB', 'value': None})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapPort', 'value': '33389'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapServer', 'value': 'ldap://fusioniam-directory-server:33389/'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'managerDn', 'value': 'cn=lemonldapng,ou=dsa,o=admin,dc=fusioniam,dc=org'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'managerPassword', 'value': 'secret'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapBase', 'value': 'dc=fusioniam,dc=org'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapGroupBase', 'value': 'dc=fusioniam,dc=org'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapGroupObjectClass', 'value': 'gosaGroupOfNames'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapGroupRecursive', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapPpolicyControl', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'ldapExportedVars/uid', 'value': 'uid'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'ldapExportedVars/cn', 'value': 'cn'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapExportedVars/sn', 'value': 'sn'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'ldapExportedVars/givenName', 'value': 'givenName'})
+fusioniam-access-manager-fastcgi-server  | ok: [localhost] => (item={'name': 'ldapExportedVars/mail', 'value': 'mail'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'mailLDAPFilter', 'value': '(&(objectClass=inetOrgPerson)(mail=$mail))'})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Set macros] **************************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'macros/profile_url', 'value': '"https://wp.demo.fusioniam.org/index.php?page=display&dn=".$_dn'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'macros/photo_url', 'value': '"https://wp.demo.fusioniam.org/photo.php?dn=".$_dn'})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Enable CAS issuer] *******************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'issuerDBCASActivation', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'casAccessControlPolicy', 'value': 'error'})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Enable OIDC issuer] ******************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'oidcServicePrivateKeySig', 'value': '-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'oidcServicePublicKeySig', 'value': '-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxM7/xbgbo2y8+YN32o9f\nWBtkUOeITlB5p563FWWvih0L34B3ZUPsAJt5Xqr8t+X9CWjUXDh74HvulPU3X5v4\nGYmi+LCWgc8TuBJRN/4BEah0ey2RT4Sn4P30aPMHPAPPjFf5/v34pz78soRZfFKO\nJaniBm5TskoXPtbGix21mUApumbM25hpGt+IMqf2LqmjY2TY18sp/ApDOCNGlWF9\naj25vd3ouBfHL7GKVqfuom8CHSJHOa7YwQmwRLHdeSAtGOwqFVTHZ63QiPghLXsm\nlPwK/9LG5W/q8BKwNohawr1x6O4/sW3fMPC3k2aFWWSvXdRF/wPl+pmtKIjDbgg3\nIEnPDYeAnRnBLjW9bdcSIBXfh1oIODzkcmjASyQt+1WwmvCg+3HQlQ8cuje3AL/E\nZA5DFIiQvqsYB8+h4v74wqAGpmP2QupwfB+mqxPW5TA8qV0gTXcqgKEhdBQCpEQ7\nFAQbscebZy8NEYPMzvOxlLDXK9oTx+DgXtacqdXAnFPATWWo4se2w9GTL2jMtv4V\nP5jYaUesS9jj9VQ3hTyRP9KbsF08NdgjIw2NntRb+FsBjupIbKgKz+wqMf/VWK3T\nrcxbaXyagvFjj+ZVXz+kOYOslS/RTAFEJ0XyqSgHTpBM+xfzBkBy23BrjR3uuhNL\n2SDwKAlSj3jShY2oPJJU9dkCAwEAAQ==\n-----END PUBLIC KEY-----'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'issuerDBOpenIDConnectActivation', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | TASK [Enable SAML issuer] ******************************************************
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'samlServicePrivateKeySig', 'value': '-----BEGIN PRIVATE KEY-----\n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\noq/kgbidpRMb9UaSQPZYAK7s/faXQQ==\n-----END PRIVATE KEY-----'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'samlServicePublicKeySig', 'value': '-----BEGIN CERTIFICATE-----\nMIIEljCCAn4CCQDEmCutm3HryDANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJG\nUjAeFw0yMTA3MTkxMzU1NDRaFw0zMTA3MTcxMzU1NDRaMA0xCzAJBgNVBAYTAkZS\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA236fDX5yOfOiZvZKLVF9\nUQY0Cn1o7EE8GhOB+QDMKxX9PMMQ0mttipJkXBEMs3RTtir0ckCwPf6+oztUfxTj\noZIw2b5SHgtWnZE+gODawgLVDhCFwCSKgkOBWjiyxyHYJHNZVLUVTDeK3qU0qUlU\nnVxTzj5YB+Bj0XduepEQJxM6dbqePe15Jg/y2c2zSNF3zy01ys4slSewpFKOBALM\nAP4xrJkdWhr6YCq74AUZ1MJtAZh4a8eoJ/ogGIqRpUqdH3ZP0HJ6G0YqWgaFp/3Z\notxeU7L/BwOyxtMLBBDToFdMTIueX7AA/r4T3nfzRWFVXGYaWU4XGYp10TAit8ax\nYnaS362UX+2234GhoAJ7HhwVGEMSFcgP85vnjufOVuR5pvxPEOTqhgNSb9BIQmkP\nH+o8qhHIbqNXaOaprqvQR6TbfZa7EOZxHGQe+GPi35Oy6K6/fdHsHH/fu5Cp71Fl\nIDOsqDQKQ6ryRsY8ietp/YoiNv5lkvlWpV+6heXek0PmWwFMvLU7xzoQ51guWhK9\no9H+PAn8HXB4ZxcZnSKMtKDik9jR2NKOdbtVAe7hPj6Hbqn+xZtcYP8jKR9yohwp\n2BgBpAfv1WQzTlBEngW0Xj8QwL/CnWGguT5VxVDEDyf9j0by5mRgF32hBdk52eXM\n/C9mJijHzMtO/FAnwJcZ90UCAwEAATANBgkqhkiG9w0BAQsFAAOCAgEAUoOsjcoC\nIJUTodhcWMIiZ2Ebap0vOQM9IDebthEoCU30Ewrti9VL+1xDggW9cVJGIa0OSEVv\nsU1dhejv0l9/F08Yhl0RxlDI9D37ERtkLSgvnokrZEAustahU6rWTaHzx/hBWmCi\nKymJH5aJrC5/6tplHhz3pbEBkB6G8zMzEqp8SyEDOvro3JUMOomdp4DV+nDVrZk1\nNdKyJZwyt3oJ6RoNJOdO9LjVbsS9uGllI+2ay4hQ87rtYKnzrmwWrLBTrlgkGNJh\nSKLnszi+FD888FgW2tRuQqoJ+NBu3zj3drsMddAEgkU7mwWT935W/cSOguXMj6qq\n9kstctQk8zmAWlJS6HmpA9JSS+b8q3W10bGwnOU5FVWshY/5BOVFacyqXqc9H1Te\nkMCau7aAC5sXb6q96NJSir3yNhpIwvZWt5RaAY318k7k4pKh05n0GckDOsdHjyHX\nbM+KDIMfAW46jZoEOPa3QqRrGdoM2HFBZLOlU6N5APOuOpmwlKhFynW87vwX1yH2\nOkD++dYGnl2ynTO0lsYBjpxr0tpyzFoYJsFBm1pzraxJ4aujvomVVzt500yTNllf\ngTjWmlJAG7076ry8cUT+j9kbRPblqg+ybFSZTuHSgKWbZvdWhyIy26N5Zc2qxfKe\nD5zexFlTt6oMYfdv54p+m/M1T4ADo0SX6R0=\n-----END CERTIFICATE-----'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'issuerDBSAMLActivation', 'value': 1})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'samlOrganizationName', 'value': 'FusionIAM'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'samlOrganizationDisplayName', 'value': 'FusionIAM'})
+fusioniam-access-manager-fastcgi-server  | changed: [localhost] => (item={'name': 'samlOrganizationURL', 'value': 'https://www.fusioniam.org'})
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | PLAY RECAP *********************************************************************
+fusioniam-access-manager-fastcgi-server  | localhost                  : ok=28   changed=13   unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+fusioniam-access-manager-fastcgi-server  | 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Logger Lemonldap::NG::Common::Logger::Log4perl loaded 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 User logger Lemonldap::NG::Common::Logger::Log4perl loaded 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Check configuration for Lemonldap::NG::Handler::Server::Main 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Lemonldap::NG::Common::Conf::Backends::CDBI loaded.
+fusioniam-access-manager-fastcgi-server  | Get configuration 159.
+fusioniam-access-manager-fastcgi-server  | Warn: mkdir /var/cache/lemonldap-ng/lemonldap-ng-config: Operation not permitted at /usr/share/perl5/vendor_perl/Cache/FileBackend.pm line 222.
+fusioniam-access-manager-fastcgi-server  |  
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Get configuration 159 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Loading configuration 159 for process 2924 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls defaultValuesInit 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls jailInit 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls portalInit 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls locationRulesInit 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls sessionStorageInit 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls headersInit 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls postUrlInit 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls aliasInit 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Process 2924 calls oauth2Init 
+fusioniam-access-manager-fastcgi-server  | 2021/07/19 15:21:11 Lemonldap::NG::Handler::Server::Main: configuration is up to date 
+fusioniam-access-manager-fastcgi-server  | bind/listen: Operation not permitted
+fusioniam-white-pages-nginx              | [WARNING]: provided hosts list is empty, only localhost is available. Note that
+fusioniam-white-pages-nginx              | the implicit localhost does not match 'all'
+fusioniam-white-pages-nginx              | 
+fusioniam-white-pages-nginx              | PLAY [localhost] ***************************************************************
+fusioniam-white-pages-nginx              | 
+fusioniam-white-pages-nginx              | TASK [Gathering Facts] *********************************************************
+fusioniam-white-pages-nginx              | ok: [localhost]
+fusioniam-white-pages-nginx              | 
+fusioniam-white-pages-nginx              | TASK [Assert variables] ********************************************************
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'CUSTOMERID', 'value': 'acme'})
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'LDAP_HOST', 'value': 'fusioniam-directory-server'})
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'LDAP_PORT', 'value': '33389'})
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'LDAP_PROTO', 'value': 'ldap'})
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'LDAP_STARTTLS', 'value': 'false'})
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'SSO_DOMAIN', 'value': 'demo.fusioniam.org'})
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'VHOST_NAME', 'value': 'wp'})
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'WHITEPAGES_LDAP_PASSWORD', 'value': 'secret'})
+fusioniam-white-pages-nginx              | ok: [localhost] => (item={'name': 'WHITEPAGES_LDAP_USERNAME', 'value': 'wp'})
+fusioniam-white-pages-nginx              | 
+fusioniam-white-pages-nginx              | TASK [Deploy config.inc.local.php file] ****************************************
+fusioniam-white-pages-nginx              | changed: [localhost]
+fusioniam-white-pages-nginx              | 
+fusioniam-white-pages-nginx              | TASK [Deploy vhost] ************************************************************
+fusioniam-white-pages-nginx              | changed: [localhost]
+fusioniam-white-pages-nginx              | 
+fusioniam-white-pages-nginx              | PLAY RECAP *********************************************************************
+fusioniam-white-pages-nginx              | localhost                  : ok=4    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+fusioniam-white-pages-nginx              | 
+fusioniam-directory-server               | [WARNING]: provided hosts list is empty, only localhost is available. Note that
+fusioniam-directory-server               | the implicit localhost does not match 'all'
+fusioniam-directory-server               | 
+fusioniam-directory-server               | PLAY [localhost] ***************************************************************
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [Gathering Facts] *********************************************************
+fusioniam-directory-server               | ok: [localhost]
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [Create Install directory] ************************************************
+fusioniam-directory-server               | changed: [localhost]
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [Copy initial config] *****************************************************
+fusioniam-directory-server               | changed: [localhost]
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [Copy initial data] *******************************************************
+fusioniam-directory-server               | changed: [localhost]
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [Check if OpenLDAP configuration folder is empty before proceeding] *******
+fusioniam-directory-server               | ok: [localhost]
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [debug] *******************************************************************
+fusioniam-directory-server               | ok: [localhost] => {
+fusioniam-directory-server               |     "msg": "OpenLDAP configuration folder not empty, skipping configuration bootstrap."
+fusioniam-directory-server               | }
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [OpenLDAP configuration folder empty, bootstrap OpenLDAP configuration.] ***
+fusioniam-directory-server               | skipping: [localhost]
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [Check if OpenLDAP data folder is empty before proceeding] ****************
+fusioniam-directory-server               | ok: [localhost]
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [debug] *******************************************************************
+fusioniam-directory-server               | ok: [localhost] => {
+fusioniam-directory-server               |     "msg": "OpenLDAP data folder not empty, skipping configuration bootstrap."
+fusioniam-directory-server               | }
+fusioniam-directory-server               | 
+fusioniam-directory-server               | TASK [OpenLDAP data folder empty, bootstrap OpenLDAP data.] ********************
+fusioniam-directory-server               | skipping: [localhost]
+fusioniam-directory-server               | 
+fusioniam-directory-server               | PLAY RECAP *********************************************************************
+fusioniam-directory-server               | localhost                  : ok=8    changed=3    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+fusioniam-directory-server               | 
+fusioniam-directory-server               | 60f5932c @(#) $OpenLDAP: slapd 2.4.59 (Jun  4 2021 17:22:35) $
+fusioniam-directory-server               | 	clement@kptn-centos8.example.com:/home/clement/build/BUILD/openldap-2.4.59/servers/slapd
+fusioniam-directory-server               | 60f59330 slapd starting
+fusioniam-directory-server               | 60f59679 conn=1000 fd=12 ACCEPT from IP=172.27.0.8:48294 (IP=0.0.0.0:33389)
+fusioniam-directory-server               | 60f59679 conn=1000 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" method=128
+fusioniam-directory-server               | 60f59679 conn=1000 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" mech=SIMPLE ssf=0
+fusioniam-directory-server               | 60f59679 conn=1000 op=0 RESULT tag=97 err=0 text=
+fusioniam-directory-server               | 60f59679 conn=1000 op=1 SRCH base="cn=lemonldapng,ou=dsa,o=admin,dc=fusioniam,dc=org" scope=0 deref=0 filter="(objectClass=*)"
+fusioniam-directory-server               | 60f59679 conn=1000 op=1 SEARCH RESULT tag=101 err=32 nentries=0 text=
+fusioniam-directory-server               | 60f59679 conn=1000 op=2 ADD dn="cn=lemonldapng,ou=dsa,o=admin,dc=fusioniam,dc=org"
+fusioniam-directory-server               | 60f5967a conn=1000 op=2 RESULT tag=105 err=0 text=
+fusioniam-directory-server               | 60f5967a conn=1000 op=3 UNBIND
+fusioniam-directory-server               | 60f5967a conn=1000 fd=12 closed
+fusioniam-directory-server               | 60f5967a conn=1001 fd=12 ACCEPT from IP=172.27.0.3:45116 (IP=0.0.0.0:33389)
+fusioniam-directory-server               | 60f5967a conn=1001 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" method=128
+fusioniam-directory-server               | 60f5967b conn=1001 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" mech=SIMPLE ssf=0
+fusioniam-directory-server               | 60f5967b conn=1001 op=0 RESULT tag=97 err=0 text=
+fusioniam-directory-server               | 60f5967b conn=1001 op=1 SRCH base="cn=lemonldapng,ou=dsa,o=admin,dc=fusioniam,dc=org" scope=0 deref=0 filter="(objectClass=*)"
+fusioniam-directory-server               | 60f5967b conn=1001 op=1 SEARCH RESULT tag=101 err=0 nentries=1 text=
+fusioniam-directory-server               | 60f5967b conn=1001 op=2 UNBIND
+fusioniam-directory-server               | 60f5967b conn=1001 fd=12 closed
+fusioniam-directory-server               | 60f5967e conn=1002 fd=12 ACCEPT from IP=172.27.0.3:45146 (IP=0.0.0.0:33389)
+fusioniam-directory-server               | 60f5967e conn=1002 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" method=128
+fusioniam-directory-server               | 60f5967e conn=1002 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" mech=SIMPLE ssf=0
+fusioniam-directory-server               | 60f5967e conn=1002 op=0 RESULT tag=97 err=0 text=
+fusioniam-directory-server               | 60f5967e conn=1002 op=1 CMP dn="cn=acl-write-all,ou=groups,o=admin,dc=fusioniam,dc=org" attr="member"
+fusioniam-directory-server               | 60f5967e conn=1002 op=1 RESULT tag=111 err=5 text=
+fusioniam-directory-server               | 60f5967e conn=1002 op=2 MOD dn="cn=acl-write-all,ou=groups,o=admin,dc=fusioniam,dc=org"
+fusioniam-directory-server               | 60f5967e conn=1002 op=2 MOD attr=member
+fusioniam-directory-server               | 60f5967f conn=1002 op=2 RESULT tag=103 err=0 text=
+fusioniam-directory-server               | 60f5967f conn=1003 fd=13 ACCEPT from IP=172.27.0.8:48338 (IP=0.0.0.0:33389)
+fusioniam-directory-server               | 60f5967f conn=1003 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" method=128
+fusioniam-directory-server               | 60f5967f conn=1003 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" mech=SIMPLE ssf=0
+fusioniam-directory-server               | 60f5967f conn=1003 op=0 RESULT tag=97 err=0 text=
+fusioniam-directory-server               | 60f5967f conn=1003 op=1 CMP dn="cn=acl-write-all,ou=groups,o=admin,dc=fusioniam,dc=org" attr="member"
+fusioniam-directory-server               | 60f5967f conn=1003 op=1 RESULT tag=111 err=6 text=
+fusioniam-directory-server               | 60f5967f conn=1002 op=3 UNBIND
+fusioniam-directory-server               | 60f5967f conn=1002 fd=12 closed
+fusioniam-directory-server               | 60f5967f conn=1003 op=2 UNBIND
+fusioniam-directory-server               | 60f5967f conn=1003 fd=13 closed
+fusioniam-directory-server               | 60f5967f conn=1004 fd=12 ACCEPT from IP=172.27.0.2:52470 (IP=0.0.0.0:33389)
+fusioniam-directory-server               | 60f5967f conn=1004 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" method=128
+fusioniam-directory-server               | 60f5967f conn=1004 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" mech=SIMPLE ssf=0
+fusioniam-directory-server               | 60f59680 conn=1004 op=0 RESULT tag=97 err=0 text=
+fusioniam-directory-server               | 60f59680 conn=1004 op=1 SRCH base="cn=lemonldapng,ou=dsa,o=admin,dc=fusioniam,dc=org" scope=0 deref=0 filter="(objectClass=*)"
+fusioniam-directory-server               | 60f59680 conn=1004 op=1 SEARCH RESULT tag=101 err=0 nentries=1 text=
+fusioniam-directory-server               | 60f59680 conn=1004 op=2 UNBIND
+fusioniam-directory-server               | 60f59680 conn=1004 fd=12 closed
+fusioniam-directory-server               | 60f59685 conn=1005 fd=12 ACCEPT from IP=172.27.0.2:52514 (IP=0.0.0.0:33389)
+fusioniam-directory-server               | 60f59685 conn=1005 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" method=128
+fusioniam-directory-server               | 60f59685 conn=1005 op=0 BIND dn="cn=admin,dc=fusioniam,dc=org" mech=SIMPLE ssf=0
+fusioniam-directory-server               | 60f59685 conn=1005 op=0 RESULT tag=97 err=0 text=
+fusioniam-directory-server               | 60f59685 conn=1005 op=1 CMP dn="cn=acl-write-all,ou=groups,o=admin,dc=fusioniam,dc=org" attr="member"
+fusioniam-directory-server               | 60f59685 conn=1005 op=1 RESULT tag=111 err=6 text=
+fusioniam-directory-server               | 60f59685 conn=1005 op=2 UNBIND
+fusioniam-directory-server               | 60f59685 conn=1005 fd=12 closed
+fusioniam-access-manager-cron            | [WARNING]: provided hosts list is empty, only localhost is available. Note that
+fusioniam-access-manager-cron            | the implicit localhost does not match 'all'
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | PLAY [localhost] ***************************************************************
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Gathering Facts] *********************************************************
+fusioniam-access-manager-cron            | ok: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [LemonLDAP main configuration file] ***************************************
+fusioniam-access-manager-cron            | changed: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Nginx vhosts] ************************************************************
+fusioniam-access-manager-cron            | changed: [localhost] => (item=api)
+fusioniam-access-manager-cron            | changed: [localhost] => (item=manager)
+fusioniam-access-manager-cron            | changed: [localhost] => (item=handler)
+fusioniam-access-manager-cron            | changed: [localhost] => (item=portal)
+fusioniam-access-manager-cron            | changed: [localhost] => (item=wp)
+fusioniam-access-manager-cron            | changed: [localhost] => (item=sd)
+fusioniam-access-manager-cron            | changed: [localhost] => (item=fd)
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Enable nginx log formats] ************************************************
+fusioniam-access-manager-cron            | changed: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Manage API auth file] ****************************************************
+fusioniam-access-manager-cron            | changed: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Remove unused vhosts] ****************************************************
+fusioniam-access-manager-cron            | changed: [localhost] => (item=test)
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Create PG Tables] ********************************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'lmconfig', 'columns': ['cfgnum integer not null primary key', 'data text']})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'sessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'psessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'cassessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'samlsessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'oidcsessions', 'columns': ['id varchar(64) not null primary key', 'a_session jsonb']})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Create PG Indices] *******************************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_s__whattotrace', 'table': 'sessions', 'columns': "((a_session ->> '_whatToTrace'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_s__session_kind', 'table': 'sessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_s__utime', 'table': 'sessions', 'columns': "((cast (a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_s_ipaddr', 'table': 'sessions', 'columns': "((a_session ->> 'ipAddr'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_s__httpsessiontype', 'table': 'sessions', 'columns': "((a_session ->> '_httpSessionType'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_p__session_kind', 'table': 'psessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_p__httpsessiontype', 'table': 'psessions', 'columns': "((a_session ->> '_httpSessionType'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_p__session_uid', 'table': 'psessions', 'columns': "((a_session ->> '_session_uid'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_p_ipaddr', 'table': 'psessions', 'columns': "((a_session ->> 'ipAddr'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_p__whattotrace', 'table': 'psessions', 'columns': "((a_session ->> '_whatToTrace'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_a__session_kind', 'table': 'samlsessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_a__utime', 'table': 'samlsessions', 'columns': "((cast(a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_a_proxyid', 'table': 'samlsessions', 'columns': "((a_session ->> 'ProxyID'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_a__nameid', 'table': 'samlsessions', 'columns': "((a_session ->> '_nameID'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_a__assert_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_assert_id'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_a__art_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_art_id'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_a__saml_id', 'table': 'samlsessions', 'columns': "((a_session ->> '_saml_id'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_o__session_kind', 'table': 'oidcsessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_o__utime', 'table': 'oidcsessions', 'columns': "((cast(a_session ->> '_utime' as bigint )))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_c__session_kind', 'table': 'cassessions', 'columns': "((a_session ->> '_session_kind'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_c__utime', 'table': 'cassessions', 'columns': "((cast(a_session ->> '_utime' as bigint)))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_c__cas_id', 'table': 'cassessions', 'columns': "((a_session ->> '_cas_id'))"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'i_c_pgtiou', 'table': 'cassessions', 'columns': "((a_session ->> 'pgtIou'))"})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Import initial config] ***************************************************
+fusioniam-access-manager-cron            | changed: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Set URLs and applications] ***********************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'domain', 'value': 'demo.fusioniam.org'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'port', 'value': 443})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'https', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'mailUrl', 'value': 'https://auth.demo.fusioniam.org/resetpwd'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portal', 'value': 'https://auth.demo.fusioniam.org/'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'registerUrl', 'value': 'https://auth.demo.fusioniam.org/register'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'reloadUrls/localhost', 'value': 'http://reload.demo.fusioniam.org/reload'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'locationRules/test1.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'locationRules/test2.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'locationRules/manager.example.com/default', 'value': 'deny'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/3documentation/localdoc/options/display', 'value': 'off'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/3documentation/officialwebsite/options/display', 'value': 'off'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/2administration/manager/options/uri', 'value': 'https://manager.demo.fusioniam.org/manager.html'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/2administration/notifications/options/uri', 'value': 'https://manager.demo.fusioniam.org/notifications.html'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/2administration/sessions/options/uri', 'value': 'https://manager.demo.fusioniam.org/sessions.html'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'locationRules/auth.demo.fusioniam.org/default', 'value': 'accept'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'locationRules/manager.demo.fusioniam.org/default', 'value': "inGroup('access-llngmanager')"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/type', 'value': 'category'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/catname', 'value': 'Applications'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/type', 'value': 'application'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/description', 'value': 'Browse directory'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/display', 'value': 'auto'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/logo', 'value': 'thumbnail.png'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/name', 'value': 'White pages'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/whitepages/options/uri', 'value': 'https://wp.demo.fusioniam.org/'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'locationRules/wp.demo.fusioniam.org/default', 'value': "inGroup('access-whitepages')"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/type', 'value': 'application'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/description', 'value': 'Manage user accounts'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/display', 'value': 'auto'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/logo', 'value': 'help.png'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/name', 'value': 'Service desk'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/servicedesk/options/uri', 'value': 'https://sd.demo.fusioniam.org/'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'locationRules/sd.demo.fusioniam.org/default', 'value': "inGroup('access-servicedesk')"})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/type', 'value': 'application'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/description', 'value': 'Edit directory entries'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/display', 'value': 'auto'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/logo', 'value': 'folder.png'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/name', 'value': 'Directory manager'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'applicationList/1applications/fusiondirectory/options/uri', 'value': 'https://fd.demo.fusioniam.org/'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'locationRules/fd.demo.fusioniam.org/default', 'value': "inGroup('access-fusiondirectory')"})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Unprotect profile URL] ***************************************************
+fusioniam-access-manager-cron            | skipping: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Unprotect photo URL] *****************************************************
+fusioniam-access-manager-cron            | changed: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Set Portal configuration] ************************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayRegister', 'value': 0})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalCheckLogins', 'value': 0})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayResetPassword', 'value': '1'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayOidcConsents', 'value': 0})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayAppslist', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayChangePassword', 'value': '1'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayLoginHistory', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayLogout', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayPasswordPolicy', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'portalDisplayRefreshMyRights', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'requireToken', 'value': '1'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'singleSession', 'value': '0'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Set LLNG Cookie configuration] *******************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'securedCookie', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'cookieName', 'value': 'fusioniam-acme'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'sameSite', 'value': 'None'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Set 2F parameters] *******************************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'totp2fSelfRegistration', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'totp2fActivation', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'totp2fIssuer', 'value': 'FusionIAM'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'sfManagerRule', 'value': '1'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Set ppolicy] *************************************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'passwordPolicyMinDigit', 'value': '0'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'passwordPolicyMinLower', 'value': '0'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'passwordPolicyMinSize', 'value': '0'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'passwordPolicyMinSpeChar', 'value': '0'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'passwordPolicyMinUpper', 'value': '0'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'passwordPolicySpecialChar', 'value': '! @ # $ % & * ( ) - = + [ ] { } ; : , . / ?'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Change session backends] *************************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item=globalStorage)
+fusioniam-access-manager-cron            | ok: [localhost] => (item=persistentStorage)
+fusioniam-access-manager-cron            | ok: [localhost] => (item=samlStorage)
+fusioniam-access-manager-cron            | ok: [localhost] => (item=casStorage)
+fusioniam-access-manager-cron            | ok: [localhost] => (item=oidcStorage)
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Change global session backends options] **********************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'TableName', 'value': 'sessions'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Change persistent session backends options] ******************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'TableName', 'value': 'psessions'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Change SAML session backends options] ************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'TableName', 'value': 'samlsessions'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Change OIDC session backends options] ************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'TableName', 'value': 'oidcsessions'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Change CAS session backends options] *************************************
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'DataSource', 'value': 'DBI:Pg:database=lemonldapng;host=fusioniam-database;port=5432'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'TableName', 'value': 'cassessions'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'UserName', 'value': 'lemonldapng'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Password', 'value': 'secret'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'key': 'Commit', 'value': 1})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Create LDAP technical account] *******************************************
+fusioniam-access-manager-cron            | ok: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Add tech account to write-all ACL] ***************************************
+fusioniam-access-manager-cron            | ok: [localhost]
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Set Auth config] *********************************************************
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'authentication', 'value': 'LDAP'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'userDB', 'value': 'LDAP'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'passwordDB', 'value': 'LDAP'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'registerDB', 'value': None})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'ldapPort', 'value': '33389'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'ldapServer', 'value': 'ldap://fusioniam-directory-server:33389/'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'managerDn', 'value': 'cn=lemonldapng,ou=dsa,o=admin,dc=fusioniam,dc=org'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'managerPassword', 'value': 'secret'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'ldapBase', 'value': 'dc=fusioniam,dc=org'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'ldapGroupBase', 'value': 'dc=fusioniam,dc=org'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'ldapGroupObjectClass', 'value': 'gosaGroupOfNames'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'ldapGroupRecursive', 'value': 1})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'ldapPpolicyControl', 'value': 1})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'ldapExportedVars/uid', 'value': 'uid'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'ldapExportedVars/cn', 'value': 'cn'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'ldapExportedVars/sn', 'value': 'sn'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'ldapExportedVars/givenName', 'value': 'givenName'})
+fusioniam-access-manager-cron            | ok: [localhost] => (item={'name': 'ldapExportedVars/mail', 'value': 'mail'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'mailLDAPFilter', 'value': '(&(objectClass=inetOrgPerson)(mail=$mail))'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Set macros] **************************************************************
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'macros/profile_url', 'value': '"https://wp.demo.fusioniam.org/index.php?page=display&dn=".$_dn'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'macros/photo_url', 'value': '"https://wp.demo.fusioniam.org/photo.php?dn=".$_dn'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Enable CAS issuer] *******************************************************
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'issuerDBCASActivation', 'value': 1})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'casAccessControlPolicy', 'value': 'error'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Enable OIDC issuer] ******************************************************
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'oidcServicePrivateKeySig', 'value': '-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'oidcServicePublicKeySig', 'value': '-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxM7/xbgbo2y8+YN32o9f\nWBtkUOeITlB5p563FWWvih0L34B3ZUPsAJt5Xqr8t+X9CWjUXDh74HvulPU3X5v4\nGYmi+LCWgc8TuBJRN/4BEah0ey2RT4Sn4P30aPMHPAPPjFf5/v34pz78soRZfFKO\nJaniBm5TskoXPtbGix21mUApumbM25hpGt+IMqf2LqmjY2TY18sp/ApDOCNGlWF9\naj25vd3ouBfHL7GKVqfuom8CHSJHOa7YwQmwRLHdeSAtGOwqFVTHZ63QiPghLXsm\nlPwK/9LG5W/q8BKwNohawr1x6O4/sW3fMPC3k2aFWWSvXdRF/wPl+pmtKIjDbgg3\nIEnPDYeAnRnBLjW9bdcSIBXfh1oIODzkcmjASyQt+1WwmvCg+3HQlQ8cuje3AL/E\nZA5DFIiQvqsYB8+h4v74wqAGpmP2QupwfB+mqxPW5TA8qV0gTXcqgKEhdBQCpEQ7\nFAQbscebZy8NEYPMzvOxlLDXK9oTx+DgXtacqdXAnFPATWWo4se2w9GTL2jMtv4V\nP5jYaUesS9jj9VQ3hTyRP9KbsF08NdgjIw2NntRb+FsBjupIbKgKz+wqMf/VWK3T\nrcxbaXyagvFjj+ZVXz+kOYOslS/RTAFEJ0XyqSgHTpBM+xfzBkBy23BrjR3uuhNL\n2SDwKAlSj3jShY2oPJJU9dkCAwEAAQ==\n-----END PUBLIC KEY-----'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'issuerDBOpenIDConnectActivation', 'value': 1})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | TASK [Enable SAML issuer] ******************************************************
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'samlServicePrivateKeySig', 'value': '-----BEGIN PRIVATE KEY-----\n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\noq/kgbidpRMb9UaSQPZYAK7s/faXQQ==\n-----END PRIVATE KEY-----'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'samlServicePublicKeySig', 'value': '-----BEGIN CERTIFICATE-----\nMIIEljCCAn4CCQDEmCutm3HryDANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJG\nUjAeFw0yMTA3MTkxMzU1NDRaFw0zMTA3MTcxMzU1NDRaMA0xCzAJBgNVBAYTAkZS\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA236fDX5yOfOiZvZKLVF9\nUQY0Cn1o7EE8GhOB+QDMKxX9PMMQ0mttipJkXBEMs3RTtir0ckCwPf6+oztUfxTj\noZIw2b5SHgtWnZE+gODawgLVDhCFwCSKgkOBWjiyxyHYJHNZVLUVTDeK3qU0qUlU\nnVxTzj5YB+Bj0XduepEQJxM6dbqePe15Jg/y2c2zSNF3zy01ys4slSewpFKOBALM\nAP4xrJkdWhr6YCq74AUZ1MJtAZh4a8eoJ/ogGIqRpUqdH3ZP0HJ6G0YqWgaFp/3Z\notxeU7L/BwOyxtMLBBDToFdMTIueX7AA/r4T3nfzRWFVXGYaWU4XGYp10TAit8ax\nYnaS362UX+2234GhoAJ7HhwVGEMSFcgP85vnjufOVuR5pvxPEOTqhgNSb9BIQmkP\nH+o8qhHIbqNXaOaprqvQR6TbfZa7EOZxHGQe+GPi35Oy6K6/fdHsHH/fu5Cp71Fl\nIDOsqDQKQ6ryRsY8ietp/YoiNv5lkvlWpV+6heXek0PmWwFMvLU7xzoQ51guWhK9\no9H+PAn8HXB4ZxcZnSKMtKDik9jR2NKOdbtVAe7hPj6Hbqn+xZtcYP8jKR9yohwp\n2BgBpAfv1WQzTlBEngW0Xj8QwL/CnWGguT5VxVDEDyf9j0by5mRgF32hBdk52eXM\n/C9mJijHzMtO/FAnwJcZ90UCAwEAATANBgkqhkiG9w0BAQsFAAOCAgEAUoOsjcoC\nIJUTodhcWMIiZ2Ebap0vOQM9IDebthEoCU30Ewrti9VL+1xDggW9cVJGIa0OSEVv\nsU1dhejv0l9/F08Yhl0RxlDI9D37ERtkLSgvnokrZEAustahU6rWTaHzx/hBWmCi\nKymJH5aJrC5/6tplHhz3pbEBkB6G8zMzEqp8SyEDOvro3JUMOomdp4DV+nDVrZk1\nNdKyJZwyt3oJ6RoNJOdO9LjVbsS9uGllI+2ay4hQ87rtYKnzrmwWrLBTrlgkGNJh\nSKLnszi+FD888FgW2tRuQqoJ+NBu3zj3drsMddAEgkU7mwWT935W/cSOguXMj6qq\n9kstctQk8zmAWlJS6HmpA9JSS+b8q3W10bGwnOU5FVWshY/5BOVFacyqXqc9H1Te\nkMCau7aAC5sXb6q96NJSir3yNhpIwvZWt5RaAY318k7k4pKh05n0GckDOsdHjyHX\nbM+KDIMfAW46jZoEOPa3QqRrGdoM2HFBZLOlU6N5APOuOpmwlKhFynW87vwX1yH2\nOkD++dYGnl2ynTO0lsYBjpxr0tpyzFoYJsFBm1pzraxJ4aujvomVVzt500yTNllf\ngTjWmlJAG7076ry8cUT+j9kbRPblqg+ybFSZTuHSgKWbZvdWhyIy26N5Zc2qxfKe\nD5zexFlTt6oMYfdv54p+m/M1T4ADo0SX6R0=\n-----END CERTIFICATE-----'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'issuerDBSAMLActivation', 'value': 1})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'samlOrganizationName', 'value': 'FusionIAM'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'samlOrganizationDisplayName', 'value': 'FusionIAM'})
+fusioniam-access-manager-cron            | changed: [localhost] => (item={'name': 'samlOrganizationURL', 'value': 'https://www.fusioniam.org'})
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | PLAY RECAP *********************************************************************
+fusioniam-access-manager-cron            | localhost                  : ok=28   changed=12   unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+fusioniam-access-manager-cron            | 
+fusioniam-access-manager-cron            | Configuration loaded
+fusioniam-database                       | 
+fusioniam-database                       | PostgreSQL Database directory appears to contain a database; Skipping initialization
+fusioniam-database                       | 
+fusioniam-database                       | 2021-07-19 14:57:15.513 UTC [1] LOG:  starting PostgreSQL 13.3 (Debian 13.3-1.pgdg100+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 8.3.0-6) 8.3.0, 64-bit
+fusioniam-access-manager-cron            | Timeout value: 72000
+fusioniam-access-manager-cron            | Session backend Apache::Session::Browseable::PgJSON will be used
+fusioniam-access-manager-cron            | SAML backend Apache::Session::Browseable::PgJSON will be used
+fusioniam-access-manager-cron            | CAS backend Apache::Session::Browseable::PgJSON will be used
+fusioniam-access-manager-cron            | OIDC backend Apache::Session::Browseable::PgJSON will be used
+fusioniam-access-manager-cron            | 0 sessions have been purged
+fusioniam-database                       | 2021-07-19 14:57:15.519 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+fusioniam-database                       | 2021-07-19 14:57:15.522 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+fusioniam-database                       | 2021-07-19 14:57:15.544 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+fusioniam-database                       | 2021-07-19 14:57:15.619 UTC [26] LOG:  database system was shut down at 2021-07-19 14:54:51 UTC
+fusioniam-database                       | 2021-07-19 14:57:15.705 UTC [1] LOG:  database system is ready to accept connections
+fusioniam-database                       | 2021-07-19 15:01:17.137 UTC [30] WARNING:  could not open statistics file "pg_stat_tmp/global.stat": Operation not permitted
+fusioniam-database                       | 2021-07-19 15:02:19.415 UTC [130] ERROR:  duplicate key value violates unique constraint "lmconfig_pkey"
+fusioniam-database                       | 2021-07-19 15:02:19.415 UTC [130] DETAIL:  Key (cfgnum)=(1) already exists.
+fusioniam-database                       | 2021-07-19 15:02:19.415 UTC [130] STATEMENT:  INSERT INTO lmConfig (data,cfgNum) VALUES ($1,$2)
+fusioniam-database                       | 2021-07-19 15:02:24.408 UTC [131] ERROR:  duplicate key value violates unique constraint "lmconfig_pkey"
+fusioniam-database                       | 2021-07-19 15:02:24.408 UTC [131] DETAIL:  Key (cfgnum)=(1) already exists.
+fusioniam-database                       | 2021-07-19 15:02:24.408 UTC [131] STATEMENT:  INSERT INTO lmConfig (data,cfgNum) VALUES ($1,$2)
+fusioniam-database                       | 2021-07-19 15:02:25.457 UTC [132] ERROR:  duplicate key value violates unique constraint "lmconfig_pkey"
+fusioniam-database                       | 2021-07-19 15:02:25.457 UTC [132] DETAIL:  Key (cfgnum)=(1) already exists.
+fusioniam-database                       | 2021-07-19 15:02:25.457 UTC [132] STATEMENT:  INSERT INTO lmConfig (data,cfgNum) VALUES ($1,$2)
+fusioniam-database                       | 2021-07-19 15:04:47.144 UTC [30] WARNING:  could not open statistics file "pg_stat_tmp/global.stat": Operation not permitted
+fusioniam-database                       | 2021-07-19 15:08:47.383 UTC [30] WARNING:  could not open statistics file "pg_stat_tmp/global.stat": Operation not permitted
+fusioniam-database                       | 2021-07-19 15:13:17.984 UTC [30] WARNING:  could not open statistics file "pg_stat_tmp/global.stat": Operation not permitted
+fusioniam-database                       | 2021-07-19 15:16:48.729 UTC [503] WARNING:  could not open statistics file "pg_stat_tmp/global.stat": Operation not permitted
+fusioniam-white-pages-php-fpm            | [WARNING]: provided hosts list is empty, only localhost is available. Note that
+fusioniam-white-pages-php-fpm            | the implicit localhost does not match 'all'
+fusioniam-white-pages-php-fpm            | 
+fusioniam-white-pages-php-fpm            | PLAY [localhost] ***************************************************************
+fusioniam-white-pages-php-fpm            | 
+fusioniam-white-pages-php-fpm            | TASK [Gathering Facts] *********************************************************
+fusioniam-white-pages-php-fpm            | ok: [localhost]
+fusioniam-white-pages-php-fpm            | 
+fusioniam-white-pages-php-fpm            | TASK [Assert variables] ********************************************************
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'CUSTOMERID', 'value': 'acme'})
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'LDAP_HOST', 'value': 'fusioniam-directory-server'})
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'LDAP_PORT', 'value': '33389'})
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'LDAP_PROTO', 'value': 'ldap'})
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'LDAP_STARTTLS', 'value': 'false'})
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'SSO_DOMAIN', 'value': 'demo.fusioniam.org'})
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'VHOST_NAME', 'value': 'wp'})
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'WHITEPAGES_LDAP_PASSWORD', 'value': 'secret'})
+fusioniam-white-pages-php-fpm            | ok: [localhost] => (item={'name': 'WHITEPAGES_LDAP_USERNAME', 'value': 'wp'})
+fusioniam-white-pages-php-fpm            | 
+fusioniam-white-pages-php-fpm            | TASK [Deploy config.inc.local.php file] ****************************************
+fusioniam-white-pages-php-fpm            | changed: [localhost]
+fusioniam-white-pages-php-fpm            | 
+fusioniam-white-pages-php-fpm            | TASK [Deploy vhost] ************************************************************
+fusioniam-white-pages-php-fpm            | changed: [localhost]
+fusioniam-white-pages-php-fpm            | 
+fusioniam-white-pages-php-fpm            | PLAY RECAP *********************************************************************
+fusioniam-white-pages-php-fpm            | localhost                  : ok=4    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+fusioniam-white-pages-php-fpm            | 
+fusioniam-white-pages-php-fpm            | [19-Jul-2021 14:58:32] ERROR: [pool www] failed to read the ACL of the socket '/run/php-fpm/www.sock': Operation not supported (95)
+fusioniam-white-pages-php-fpm            | [19-Jul-2021 14:58:32] ERROR: FPM initialization failed
