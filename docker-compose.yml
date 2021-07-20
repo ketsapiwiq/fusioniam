@@ -100,6 +100,12 @@ services:
       - "./run/servicedesk.conf.compose.example.php:/var/www/conf/config.inc.local.php"
     image: "docker.io/ltbproject/service-desk:latest"
 
+  ltb-self-service-password:
+    # ports:
+    #     - '80:80'
+    volumes:
+      - "./run/ssp.conf.example.php:/var/www/conf/config.inc.local.php"
+    image: "docker.io/ltbproject/self-service-password:latest"
 
   traefik:
     image: traefik:v2.2.0
