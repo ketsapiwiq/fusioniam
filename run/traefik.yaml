@@ -1,0 +1,4 @@
+# tls:
+#   certificates:
+#     - certFile: /certs/pleroma.local.pem
+#       keyFile: /certs/pleroma.local-key.pem

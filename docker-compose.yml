@@ -109,6 +109,7 @@ services:
     image: "docker.io/ltbproject/service-desk:latest"
 
   ltb-self-service-password:
+    env_file: ./run/ENVVAR.compose.example
     # ports:
     #     - '80:80'
     volumes:
@@ -135,8 +136,8 @@ services:
     # hostname: pleroma.local
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./infra/dev/traefik/traefik.yaml:/config/traefik.yaml
-      - ./infra/dev/traefik/certs:/certs
+      - ./run/traefik.yaml:/config/traefik.yaml
+      - ./run/volumes/certs:/certs
       # - /dev/null:/traefik.toml
     networks:
       default:
