@@ -21,13 +21,6 @@ services:
 
   fusioniam-access-manager-fastcgi-server:
     env_file: ./run/ENVVAR.compose.example
-    # Debug
-    # user: root
-    # cap_add:
-    #   - ALL
-    # privileged: true
-    # ports:
-    #   - "127.0.0.1:8080:8080"
     volumes:
       - "./run/volumes/llng-run:/run/llng-fastcgi-server"
       - "./run/volumes/llng-cache:/var/cache/lemonldap-ng"
