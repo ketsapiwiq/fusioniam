@@ -57,7 +57,7 @@ services:
       - traefik.enable=true
       - traefik.http.services.fusioniam-access-manager-nginx.loadbalancer.server.port=80
       - traefik.http.routers.fusioniam-access-manager-nginx.entryPoints=http
-      - traefik.http.routers.fusioniam-access-manager-nginx.rule="Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
+      - "traefik.http.routers.fusioniam-access-manager-nginx.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
       # - traefik.http.routers.fusioniam-access-manager-nginx.middlewares=https_redirect
       - traefik.http.routers.fusioniam-access-manager-nginx-https.entryPoints=https
       - "traefik.http.routers.fusioniam-access-manager-nginx-https.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
