@@ -1,6 +1,6 @@
 # FusionIAM
 
-This is the main [FusionIAM](https://www.fusioniam.org) project.
+This is a clone of the main [FusionIAM](https://www.fusioniam.org) project located at <https://gitlab.ow2.org/fusioniam/fusioniam/>.
 
 FusionIAM is a software federation to offer a global open source IAM solution.
 
