@@ -1,5 +1,23 @@
 version: "3.3"
 services:
+  fusioniam-fusiondirectory:
+    env_file: ./run/ENVVAR.compose.example
+    image: "docker.io/tiredofit/fusiondirectory:1.4"
+    container_name: fusioniam-fusiondirectory
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.fusioniam-fusiondirectory.loadbalancer.server.port=80
+      - traefik.http.routers.fusioniam-fusiondirectory-nginx.entryPoints=http
+      - "traefik.http.routers.fusioniam-fusiondirectory.rule=Host(`fd.demo.fusioniam.org`)"
+      - traefik.http.routers.fusioniam-fusiondirectory-https.entryPoints=https
+      - "traefik.http.routers.fusioniam-fusiondirectory-https.rule=Host(`fd.demo.fusioniam.org`)"
+      - traefik.http.routers.fusioniam-fusiondirectory-https.tls=true
+    # - traefik.http.routers.fusioniam-access-manager-nginx.middlewares=https_redirect
+    volumes:
+      - ./run/volumes/fd-data/logs:/www/logs
+      #- ./custom:/assets/fusiondirectory
+      #- ./plugins-custom:/assets/plugins-custom
+
   fusioniam-directory-server:
     env_file: ./run/ENVVAR.compose.example
     volumes:
@@ -50,10 +68,12 @@ services:
       - traefik.enable=true
       - traefik.http.services.fusioniam-access-manager-nginx.loadbalancer.server.port=8080
       - traefik.http.routers.fusioniam-access-manager-nginx.entryPoints=http
-      - "traefik.http.routers.fusioniam-access-manager-nginx.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
+      - "traefik.http.routers.fusioniam-access-manager-nginx.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`)"
+      # - "traefik.http.routers.fusioniam-access-manager-nginx.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
       # - traefik.http.routers.fusioniam-access-manager-nginx.middlewares=https_redirect
       - traefik.http.routers.fusioniam-access-manager-nginx-https.entryPoints=https
-      - "traefik.http.routers.fusioniam-access-manager-nginx-https.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
+      - "traefik.http.routers.fusioniam-access-manager-nginx-https.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`)"
+      # - "traefik.http.routers.fusioniam-access-manager-nginx-https.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
       - traefik.http.routers.fusioniam-access-manager-nginx-https.tls=true
 
   fusioniam-access-manager-cron:
