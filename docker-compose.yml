@@ -26,7 +26,7 @@ services:
     ports:
       - "127.0.0.1:33389:33389"
     container_name: fusioniam-directory-server
-    image: "fusioniam-centos8-openldap-ltb:v0.1"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-openldap-ltb:v0.1"
 
   fusioniam-database:
     volumes:
@@ -48,7 +48,7 @@ services:
       - "/bin/bash"
       - "/run-ct.sh"
       - "llng-fastcgi-server"
-    image: "fusioniam-centos8-lemonldap-ng:v0.1"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1"
 
   fusioniam-access-manager-nginx:
     env_file: ./run/ENVVAR.compose.example
@@ -63,7 +63,7 @@ services:
       - "/bin/bash"
       - "/run-ct.sh"
       - "nginx"
-    image: "fusioniam-centos8-lemonldap-ng:v0.1"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1"
     labels:
       - traefik.enable=true
       - traefik.http.services.fusioniam-access-manager-nginx.loadbalancer.server.port=8080
@@ -87,7 +87,7 @@ services:
       - "/bin/bash"
       - "/run-ct.sh"
       - "purge-sessions"
-    image: "fusioniam-centos8-lemonldap-ng:v0.1"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1"
 
   fusioniam-white-pages-php-fpm:
     env_file: ./run/ENVVAR.compose.example
@@ -98,7 +98,7 @@ services:
       - "/bin/bash"
       - "/run-ct.sh"
       - "php-fpm"
-    image: "fusioniam-centos8-white-pages:v0.1"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-white-pages:v0.1"
 
   fusioniam-white-pages-nginx:
     env_file: ./run/ENVVAR.compose.example
@@ -111,7 +111,7 @@ services:
       - "/bin/bash"
       - "/run-ct.sh"
       - "nginx"
-    image: "fusioniam-centos8-white-pages:v0.1"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-white-pages:v0.1"
 
   fusioniam-service-desk:
     env_file: ./run/ENVVAR.compose.example
