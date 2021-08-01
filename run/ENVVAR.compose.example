@@ -23,11 +23,12 @@ PLUGIN_SSH=TRUE
 PLUGIN_SUDO=TRUE
 PLUGIN_WEBSERVICE=TRUE
 
-LDAP1_HOST=openldap-fusiondirectory
-#LDAP1_BASE_DN=dc=example,dc=org
-#LDAP1_BASE_DN=dc=example,dc=org
-LDAP1_ADMIN_DN=cn=fd
+LDAP1_HOST=fusioniam-directory-server
+#LDAP1_BASE_DN=dc=coopaname,dc=coop
+LDAP1_BASE_DN=dc=example,dc=org
+#LDAP1_ADMIN_DN=cn=fd
 #LDAP1_ADMIN_DN=cn=admin,dc=example,dc=org
+LDAP1_ADMIN_DN=cn=fd,dc=example,dc=org
 LDAP1_ADMIN_PASS=secret
 LDAP1_PORT=33389
 LDAP1_NAME=Production
