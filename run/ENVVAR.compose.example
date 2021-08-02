@@ -24,14 +24,17 @@ PLUGIN_SUDO=TRUE
 PLUGIN_WEBSERVICE=TRUE
 
 LDAP1_HOST=fusioniam-directory-server
-#LDAP1_BASE_DN=dc=coopaname,dc=coop
-LDAP1_BASE_DN=dc=example,dc=org
-#LDAP1_ADMIN_DN=cn=fd
-#LDAP1_ADMIN_DN=cn=admin,dc=example,dc=org
-LDAP1_ADMIN_DN=cn=fd,dc=example,dc=org
+LDAP1_BASE_DN=dc=fusioniam,dc=org
+LDAP1_ADMIN_DN=cn=admin,dc=fusioniam,dc=org
 LDAP1_ADMIN_PASS=secret
 LDAP1_PORT=33389
-LDAP1_NAME=Production
+LDAP1_NAME=fd
+
+LDAP2_NAME=admin
+LDAP2_ADMIN_DN=cn=fd,dc=coopaname,dc=coop
+LDAP2_ADMIN_PASS=secret
+LDAP2_BASE_DN=dc=coopaname,dc=coop
+LDAP2_PORT=33389
 
 FUSIONDIRECTORY_HOST=fusioniam-fusiondirectory
 FUSIONDIRECTORY_LDAP_PASSWORD=secret
