@@ -1,0 +1,163 @@
+version: "3.3"
+services:
+  fusioniam-fusiondirectory:
+    env_file: ./run/ENVVAR.compose.example
+    image: "docker.io/tiredofit/fusiondirectory:1.4"
+    container_name: fusioniam-fusiondirectory
+    #labels:
+    #  - traefik.enable=true
+    #  - traefik.http.services.fusioniam-fusiondirectory.loadbalancer.server.port=80
+    #  - traefik.http.routers.fusioniam-fusiondirectory-nginx.entryPoints=http
+    #  - "traefik.http.routers.fusioniam-fusiondirectory.rule=Host(`fd.demo.fusioniam.org`)"
+    #  - traefik.http.routers.fusioniam-fusiondirectory-https.entryPoints=https
+    #  - "traefik.http.routers.fusioniam-fusiondirectory-https.rule=Host(`fd.demo.fusioniam.org`)"
+    #  - traefik.http.routers.fusioniam-fusiondirectory-https.tls=true
+    ## - traefik.http.routers.fusioniam-access-manager-nginx.middlewares=https_redirect
+    volumes:
+      - ./run/volumes/fd-data/logs:/www/logs
+      #- ./custom:/assets/fusiondirectory
+      #- ./plugins-custom:/assets/plugins-custom
+
+  fusioniam-directory-server:
+    env_file: ./run/ENVVAR.compose.example
+    volumes:
+      - "./run/volumes/ldap-data:/usr/local/openldap/var/openldap-data"
+      - "./run/volumes/ldap-config:/usr/local/openldap/etc/openldap/slapd.d"
+    ports:
+      - "127.0.0.1:33389:33389"
+    container_name: fusioniam-directory-server
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-openldap-ltb:v0.1"
+
+  fusioniam-database:
+    volumes:
+      - "./run/volumes/sso-data:/var/lib/postgresql/data"
+    env_file: ./run/ENVVAR.compose.example
+    ports:
+      - "127.0.0.1:33432:5432"
+    container_name: fusioniam-database
+    image: docker.io/library/postgres
+
+  fusioniam-access-manager-fastcgi-server:
+    env_file: ./run/ENVVAR.compose.example
+    volumes:
+      - "./run/volumes/llng-run:/run/llng-fastcgi-server"
+      - "./run/volumes/llng-cache:/var/cache/lemonldap-ng"
+      - "./run/volumes/llng-keys:/etc/lemonldap-ng-keys"
+    container_name: fusioniam-access-manager-fastcgi-server
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "llng-fastcgi-server"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1"
+
+  fusioniam-access-manager-nginx:
+    env_file: ./run/ENVVAR.compose.example
+    volumes:
+      - "./run/volumes/llng-run:/run/llng-fastcgi-server"
+      - "./run/volumes/llng-cache:/var/cache/lemonldap-ng"
+      - "./run/volumes/llng-keys:/etc/lemonldap-ng-keys"
+    ports:
+      - "127.0.0.1:8080:8080"
+    container_name: fusioniam-access-manager-nginx
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "nginx"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1"
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.fusioniam-access-manager-nginx.loadbalancer.server.port=8080
+      - traefik.http.routers.fusioniam-access-manager-nginx.entryPoints=http
+      # - "traefik.http.routers.fusioniam-access-manager-nginx.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`)"
+      - "traefik.http.routers.fusioniam-access-manager-nginx.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
+      # - traefik.http.routers.fusioniam-access-manager-nginx.middlewares=https_redirect
+      - traefik.http.routers.fusioniam-access-manager-nginx-https.entryPoints=https
+      # - "traefik.http.routers.fusioniam-access-manager-nginx-https.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`)"
+      - "traefik.http.routers.fusioniam-access-manager-nginx-https.rule=Host(`auth.demo.fusioniam.org`) || Host(`manager.demo.fusioniam.org`) || Host(`api-manager.demo.fusioniam.org`) || Host(`wp.demo.fusioniam.org`) || Host(`sd.demo.fusioniam.org`) || Host(`fd.demo.fusioniam.org`)"
+      - traefik.http.routers.fusioniam-access-manager-nginx-https.tls=true
+
+  fusioniam-access-manager-cron:
+    env_file: ./run/ENVVAR.compose.example
+    volumes:
+      - "./run/volumes/llng-run:/run/llng-fastcgi-server"
+      - "./run/volumes/llng-cache:/var/cache/lemonldap-ng"
+      - "./run/volumes/llng-keys:/etc/lemonldap-ng-keys"
+    container_name: fusioniam-access-manager-cron
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "purge-sessions"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1"
+
+  fusioniam-white-pages-php-fpm:
+    env_file: ./run/ENVVAR.compose.example
+    volumes:
+      - "./run/volumes/wp-run:/run/php-fpm/"
+    container_name: fusioniam-white-pages-php-fpm
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "php-fpm"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-white-pages:v0.1"
+
+  fusioniam-white-pages-nginx:
+    env_file: ./run/ENVVAR.compose.example
+    volumes:
+      - "./run/volumes/wp-run:/var/run/php-fpm/"
+    ports:
+      - "127.0.0.1:8083:8080"
+    container_name: fusioniam-white-pages-nginx
+    entrypoint:
+      - "/bin/bash"
+      - "/run-ct.sh"
+      - "nginx"
+    image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-white-pages:v0.1"
+
+  fusioniam-service-desk:
+    env_file: ./run/ENVVAR.compose.example
+    ports:
+      - "8082:80"
+    volumes:
+      - "./run/servicedesk.conf.compose.example.php:/var/www/conf/config.inc.local.php"
+    image: "docker.io/ltbproject/service-desk:latest"
+
+  ltb-self-service-password:
+    env_file: ./run/ENVVAR.compose.example
+    # ports:
+    #     - '80:80'
+    volumes:
+      - "./run/ssp.conf.example.php:/var/www/conf/config.inc.local.php"
+    image: "docker.io/ltbproject/self-service-password:latest"
+
+  traefik:
+    image: traefik:v2.2.0
+    ports:
+      - 80:80
+      - 443:443
+    # command: --web --docker --docker.domain=local --logLevel=DEBUG
+    command:
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --entrypoints.http.forwardedHeaders.insecure
+      - --entrypoints.https.forwardedHeaders.insecure
+      - --entrypoints.http.http.redirections.entryPoint.to=https
+      - --entrypoints.http.http.redirections.entryPoint.scheme=https
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --api.insecure
+      - --providers.file.filename=/config/traefik.yaml
+    # hostname: pleroma.local
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./run/traefik.yaml:/config/traefik.yaml
+      - ./run/volumes/certs:/certs
+      # - /dev/null:/traefik.toml
+    networks:
+      default:
+        aliases:
+          - auth.demo.fusioniam.org
+          - manager.demo.fusioniam.org
+          - api-manager.demo.fusioniam.org
+          - wp.demo.fusioniam.org
+          - sd.demo.fusioniam.org
+          - fd.demo.fusioniam.org
