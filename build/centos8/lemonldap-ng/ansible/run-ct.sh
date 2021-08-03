@@ -5,11 +5,11 @@ set -e
 
 if [ "$1" = "nginx" ]
     then
-        ln -s /dev/stdout /var/log/nginx/access.log
-        ln -s /dev/stdout /var/log/nginx/error.log
-        ln -s /dev/stdout /var/log/nginx/manager-api.log
-        ln -s /dev/stdout /var/log/nginx/manager.log
-        ln -s /dev/stdout /var/log/nginx/portal.log
+        ln -sf /dev/stdout /var/log/nginx/access.log
+        ln -sf /dev/stdout /var/log/nginx/error.log
+        ln -sf /dev/stdout /var/log/nginx/manager-api.log
+        ln -sf /dev/stdout /var/log/nginx/manager.log
+        ln -sf /dev/stdout /var/log/nginx/portal.log
         /usr/sbin/nginx -g 'daemon off;'
 elif [ "$1" = "llng-fastcgi-server" ]
     then

@@ -10,15 +10,15 @@ cp /usr/share/white-pages/config.inc.php /usr/share/white-pages/conf/config.inc.
 
 if [ "$1" = "nginx" ]
 then
-        ln -s /dev/stdout /var/log/nginx/access.log
-        ln -s /dev/stdout /var/log/nginx/error.log
-        ln -s /dev/stdout /var/log/nginx/wp.access.log
-        ln -s /dev/stdout /var/log/nginx/wp.error.log
+        ln -sf /dev/stdout /var/log/nginx/access.log
+        ln -sf /dev/stdout /var/log/nginx/error.log
+        ln -sf /dev/stdout /var/log/nginx/wp.access.log
+        ln -sf /dev/stdout /var/log/nginx/wp.error.log
         /usr/sbin/nginx -g 'daemon off;'
 elif [ "$1" = "php-fpm" ]
 then
-        ln -s /dev/stdout /var/log/php-fpm/error.log
-        ln -s /dev/stdout /var/log/php-fpm/www-error.log
+        ln -sf /dev/stdout /var/log/php-fpm/error.log
+        ln -sf /dev/stdout /var/log/php-fpm/www-error.log
         /usr/sbin/php-fpm --nodaemonize
 fi
 
