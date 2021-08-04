@@ -24,7 +24,7 @@ services:
       - "./run/volumes/ldap-data:/usr/local/openldap/var/openldap-data"
       - "./run/volumes/ldap-config:/usr/local/openldap/etc/openldap/slapd.d"
     ports:
-      - "127.0.0.1:33389:33389"
+      - "33389:33389"
     container_name: fusioniam-directory-server
     image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-openldap-ltb:v0.1"
 
@@ -32,8 +32,6 @@ services:
     volumes:
       - "./run/volumes/sso-data:/var/lib/postgresql/data"
     env_file: ./run/ENVVAR.compose.example
-    ports:
-      - "127.0.0.1:33432:5432"
     container_name: fusioniam-database
     image: docker.io/library/postgres
 
@@ -56,13 +54,13 @@ services:
       - "./run/volumes/llng-run:/run/llng-fastcgi-server"
       - "./run/volumes/llng-cache:/var/cache/lemonldap-ng"
       - "./run/volumes/llng-keys:/etc/lemonldap-ng-keys"
-    ports:
-      - "127.0.0.1:8080:8080"
     container_name: fusioniam-access-manager-nginx
     entrypoint:
       - "/bin/bash"
       - "/run-ct.sh"
       - "nginx"
+        #ports:
+        #- 80:80
     image: "gitlab.ow2.org:4567/fusioniam/fusioniam/fusioniam-centos8-lemonldap-ng:v0.1"
     labels:
       - traefik.enable=true
@@ -104,8 +102,6 @@ services:
     env_file: ./run/ENVVAR.compose.example
     volumes:
       - "./run/volumes/wp-run:/var/run/php-fpm/"
-    ports:
-      - "127.0.0.1:8083:8080"
     container_name: fusioniam-white-pages-nginx
     entrypoint:
       - "/bin/bash"
@@ -115,16 +111,12 @@ services:
 
   fusioniam-service-desk:
     env_file: ./run/ENVVAR.compose.example
-    ports:
-      - "8082:80"
     volumes:
       - "./run/servicedesk.conf.compose.example.php:/var/www/conf/config.inc.local.php"
     image: "docker.io/ltbproject/service-desk:latest"
 
   ltb-self-service-password:
     env_file: ./run/ENVVAR.compose.example
-    # ports:
-    #     - '80:80'
     volumes:
       - "./run/ssp.conf.example.php:/var/www/conf/config.inc.local.php"
     image: "docker.io/ltbproject/self-service-password:latest"
